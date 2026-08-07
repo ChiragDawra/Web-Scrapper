@@ -1,0 +1,1 @@
+Consumes Flipkart purchase tasks only.

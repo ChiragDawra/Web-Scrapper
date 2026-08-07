@@ -1,0 +1,1 @@
+Consumes Amazon purchase tasks only. Opens product URL, validates listing, executes checkout workflow.

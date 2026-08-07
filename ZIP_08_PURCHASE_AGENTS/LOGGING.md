@@ -1,0 +1,1 @@
+Structured logs with correlation IDs linking purchase task to browser actions.

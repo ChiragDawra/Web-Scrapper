@@ -1,0 +1,1 @@
+Persistent authenticated sessions where appropriate. Isolate cookies by account.

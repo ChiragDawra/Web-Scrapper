@@ -1,0 +1,1 @@
+Per-account cookie jars with rotation and invalidation strategy.

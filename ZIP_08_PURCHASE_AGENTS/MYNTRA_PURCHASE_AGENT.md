@@ -1,0 +1,1 @@
+Consumes Myntra purchase tasks only.

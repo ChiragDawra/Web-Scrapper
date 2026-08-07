@@ -1,0 +1,1 @@
+Encrypt session state, refresh when expired, never share sessions across marketplaces.

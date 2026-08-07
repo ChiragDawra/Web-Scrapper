@@ -1,0 +1,1 @@
+Require upstream confirmation and latest deal validation before execution. Respect platform policies and avoid unsafe retry loops.

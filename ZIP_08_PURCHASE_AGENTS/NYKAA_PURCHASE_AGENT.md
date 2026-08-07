@@ -1,0 +1,1 @@
+Consumes Nykaa purchase tasks only.

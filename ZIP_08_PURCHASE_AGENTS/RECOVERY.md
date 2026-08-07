@@ -1,0 +1,1 @@
+Recover from UI changes, navigation failures, network issues, and interrupted execution.

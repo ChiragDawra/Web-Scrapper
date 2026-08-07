@@ -1,0 +1,1 @@
+Browser automation layer isolated from business logic. One browser context per account.

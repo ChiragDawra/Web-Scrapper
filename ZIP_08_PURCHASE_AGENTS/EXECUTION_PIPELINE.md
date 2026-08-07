@@ -1,0 +1,1 @@
+Task -> Agent -> Login -> Validate Listing -> Add Quantity -> Review -> Checkout -> Result Event.
