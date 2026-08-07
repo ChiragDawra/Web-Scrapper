@@ -1,0 +1,1 @@
+ZIP 02 will introduce the complete architecture, event bus, sequence diagrams and service contracts.
