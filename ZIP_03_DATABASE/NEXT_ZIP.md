@@ -1,0 +1,1 @@
+ZIP04 introduces marketplace connector architecture.
