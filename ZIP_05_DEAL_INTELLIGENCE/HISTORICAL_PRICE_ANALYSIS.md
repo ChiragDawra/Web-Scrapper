@@ -1,0 +1,1 @@
+Compute lowest price, average price, discount history and volatility from snapshots.

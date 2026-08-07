@@ -1,0 +1,1 @@
+ZIP06 will define Telegram bot architecture and conversation state machine.

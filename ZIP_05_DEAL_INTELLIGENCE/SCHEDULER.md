@@ -1,0 +1,1 @@
+Priority scheduler assigns scan frequency by marketplace/category/product importance with backoff.

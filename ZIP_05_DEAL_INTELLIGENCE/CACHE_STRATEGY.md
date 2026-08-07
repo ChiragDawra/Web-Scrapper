@@ -1,0 +1,1 @@
+Cache listing metadata and recent scans. Never cache purchase decisions.

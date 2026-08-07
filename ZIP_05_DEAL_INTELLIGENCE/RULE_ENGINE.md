@@ -1,0 +1,1 @@
+Configurable rules: approved brands, categories, minimum discount, seller thresholds, exclusions.

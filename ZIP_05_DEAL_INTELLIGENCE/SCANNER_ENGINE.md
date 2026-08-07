@@ -1,0 +1,1 @@
+Scanner workers periodically collect marketplace listings through connectors and emit normalized products.

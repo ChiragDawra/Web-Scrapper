@@ -1,0 +1,1 @@
+Create deal candidates when configurable business rules are satisfied.

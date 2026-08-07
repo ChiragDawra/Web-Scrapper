@@ -1,0 +1,1 @@
+Store immutable price snapshots. Detect price deltas and historical lows.

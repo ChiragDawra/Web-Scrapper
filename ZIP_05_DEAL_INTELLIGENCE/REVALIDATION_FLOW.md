@@ -1,0 +1,1 @@
+When user taps Interested, refresh the live listing before asking quantity. If price changed or deal expired, notify user with updated status.
