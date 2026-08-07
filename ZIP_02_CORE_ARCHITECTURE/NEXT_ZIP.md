@@ -1,0 +1,1 @@
+ZIP03 will define database schema, ER diagrams and persistence.
