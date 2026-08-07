@@ -1,0 +1,1 @@
+Containerize each service independently. Multi-stage builds. Health checks.

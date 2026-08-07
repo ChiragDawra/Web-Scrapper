@@ -1,0 +1,1 @@
+Use environment variables or a secrets manager. Never commit credentials.

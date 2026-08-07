@@ -1,0 +1,1 @@
+Local development stack with PostgreSQL, Redis, API, Bot and optional Kafka.

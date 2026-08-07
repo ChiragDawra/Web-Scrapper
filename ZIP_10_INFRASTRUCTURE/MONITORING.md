@@ -1,0 +1,1 @@
+Metrics, traces and alerts. Monitor scan latency, queue depth and failures.

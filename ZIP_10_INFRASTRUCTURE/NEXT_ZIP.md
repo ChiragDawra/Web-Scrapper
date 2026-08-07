@@ -1,0 +1,1 @@
+ZIP11 will define testing strategy.

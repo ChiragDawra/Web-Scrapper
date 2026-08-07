@@ -1,0 +1,1 @@
+Lint, tests, build, security scan and deploy pipeline.

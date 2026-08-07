@@ -1,0 +1,1 @@
+Caching, queues, locks and session state.

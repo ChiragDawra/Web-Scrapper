@@ -1,0 +1,1 @@
+Environments: local, staging, production. Blue/green or rolling deployments.

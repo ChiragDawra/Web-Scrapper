@@ -1,0 +1,1 @@
+Structured JSON logs with correlation IDs across services.

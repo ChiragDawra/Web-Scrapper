@@ -1,0 +1,1 @@
+Optional production event bus. Redis Streams acceptable for MVP.
