@@ -1,0 +1,1 @@
+Inline buttons: Interested, Ignore, Watch Later. Quantity collected only after successful revalidation.

@@ -1,0 +1,1 @@
+Deal->Interested->Revalidated->Quantity->Confirmed->Planner.

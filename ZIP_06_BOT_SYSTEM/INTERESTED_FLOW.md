@@ -1,0 +1,1 @@
+Interested event stores deal_id and timestamp, then requests live refresh from marketplace connector.

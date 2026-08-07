@@ -1,0 +1,1 @@
+Refresh listing before asking quantity. If expired or changed, send updated deal card instead.

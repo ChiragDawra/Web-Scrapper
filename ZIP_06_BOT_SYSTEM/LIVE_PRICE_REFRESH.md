@@ -1,0 +1,1 @@
+Always query latest listing through connector. Never rely on cached notification data for purchases.

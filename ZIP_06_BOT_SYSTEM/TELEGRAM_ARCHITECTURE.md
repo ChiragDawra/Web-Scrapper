@@ -1,0 +1,1 @@
+Bot receives events from Deal Engine and publishes user actions to the event bus.

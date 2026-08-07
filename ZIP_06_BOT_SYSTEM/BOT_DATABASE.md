@@ -1,0 +1,1 @@
+Conversation state, message mapping, pending actions, audit log.

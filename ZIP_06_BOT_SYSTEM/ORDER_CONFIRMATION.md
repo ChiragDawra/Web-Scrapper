@@ -1,0 +1,1 @@
+Show platform, latest price, quantity, estimated total, then ask for final confirmation.

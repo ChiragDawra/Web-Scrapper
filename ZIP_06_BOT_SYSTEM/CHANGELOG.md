@@ -1,0 +1,1 @@
+Bot architecture documentation added.

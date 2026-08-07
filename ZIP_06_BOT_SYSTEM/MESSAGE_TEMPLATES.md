@@ -1,0 +1,1 @@
+Template fields: platform, brand, product, current price, MRP, discount, deal id, last verified time.

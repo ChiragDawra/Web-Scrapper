@@ -1,0 +1,1 @@
+Accept numeric quantity, validate limits, publish PURCHASE_REQUESTED event.

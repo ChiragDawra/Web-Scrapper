@@ -1,0 +1,1 @@
+Flow: Deal Notification -> Interested -> Live Revalidation -> Quantity -> Confirmation -> Purchase Request.
