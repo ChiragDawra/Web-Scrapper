@@ -1,0 +1,1 @@
+Resume by reading CURRENT_STATE and CHANGELOG before writing code.

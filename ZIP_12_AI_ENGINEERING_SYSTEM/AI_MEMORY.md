@@ -1,0 +1,1 @@
+Persist architectural decisions, completed modules, unresolved issues, and assumptions.

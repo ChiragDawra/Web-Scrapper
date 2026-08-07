@@ -1,0 +1,1 @@
+Never change unrelated modules. Respect contracts. Update docs with code changes.

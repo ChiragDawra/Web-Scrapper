@@ -1,0 +1,1 @@
+Read Foundation, Core Architecture, Database, and relevant module docs before coding.

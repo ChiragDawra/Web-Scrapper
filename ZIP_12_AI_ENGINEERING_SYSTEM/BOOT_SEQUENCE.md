@@ -1,0 +1,1 @@
+1.Read CURRENT_STATE 2.Read architecture 3.Read target module docs 4.Plan 5.Code 6.Test 7.Update CURRENT_STATE.

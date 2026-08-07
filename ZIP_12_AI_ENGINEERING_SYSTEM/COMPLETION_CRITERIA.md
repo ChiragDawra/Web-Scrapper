@@ -1,0 +1,1 @@
+Every module requires tests, docs, lint, and architecture compliance before completion.

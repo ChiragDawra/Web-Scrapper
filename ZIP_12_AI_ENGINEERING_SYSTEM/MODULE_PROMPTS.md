@@ -1,0 +1,1 @@
+One prompt template per module. AI must only work on the requested module.

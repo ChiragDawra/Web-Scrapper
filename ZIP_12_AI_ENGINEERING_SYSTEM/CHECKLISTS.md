@@ -1,0 +1,1 @@
+Definition of Ready, Definition of Done, release checklist, documentation checklist.

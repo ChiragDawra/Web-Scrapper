@@ -1,0 +1,1 @@
+Sprint workflow: Plan -> Implement -> Test -> Review -> Update project memory.

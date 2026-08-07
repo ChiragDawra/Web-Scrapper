@@ -1,0 +1,1 @@
+Keep context scoped to the active module. Use repository docs as source of truth.

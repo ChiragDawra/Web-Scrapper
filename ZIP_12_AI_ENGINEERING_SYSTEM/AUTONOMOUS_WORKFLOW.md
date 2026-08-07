@@ -1,0 +1,1 @@
+AI proposes plan, implements one scoped task, runs checks, summarizes changes, awaits approval for risky changes.
