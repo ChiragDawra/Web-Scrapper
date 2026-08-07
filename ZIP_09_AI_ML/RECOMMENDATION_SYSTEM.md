@@ -1,0 +1,1 @@
+Recommend deals based on historical buy/ignore decisions and realized profit.

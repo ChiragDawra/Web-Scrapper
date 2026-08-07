@@ -1,0 +1,1 @@
+Forecast expected sell-through using historical sales, seasonality and category trends.

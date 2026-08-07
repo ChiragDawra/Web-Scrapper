@@ -1,0 +1,1 @@
+Estimate resale margin from purchase price, historical outcomes and market behavior.

@@ -1,0 +1,1 @@
+Collect feedback after purchases for future retraining; no direct online weight updates in MVP.

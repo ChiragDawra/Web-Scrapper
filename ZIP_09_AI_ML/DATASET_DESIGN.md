@@ -1,0 +1,1 @@
+Training datasets built from deals, user actions, orders and outcomes. Separate train/validation/test.

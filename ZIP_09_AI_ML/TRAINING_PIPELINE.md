@@ -1,0 +1,1 @@
+Offline training pipeline with scheduled retraining and model versioning.

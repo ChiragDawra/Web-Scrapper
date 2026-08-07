@@ -1,0 +1,1 @@
+Hybrid approach: rule-based MVP evolving to ML ranking using historical outcomes.
