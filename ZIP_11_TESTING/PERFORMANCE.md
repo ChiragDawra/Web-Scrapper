@@ -1,0 +1,1 @@
+Define SLIs/SLOs for scan time, notification latency, and planner throughput.

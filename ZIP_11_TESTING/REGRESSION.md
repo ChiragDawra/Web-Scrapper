@@ -1,0 +1,1 @@
+Run full regression suite before every release.

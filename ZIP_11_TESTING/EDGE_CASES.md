@@ -1,0 +1,1 @@
+Expired deals, price changes, account limits, connector failures, duplicate events.

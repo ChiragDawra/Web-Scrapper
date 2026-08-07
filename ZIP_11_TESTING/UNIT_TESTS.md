@@ -1,0 +1,1 @@
+Test individual modules with mocks and deterministic fixtures.

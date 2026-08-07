@@ -1,0 +1,1 @@
+Verify end-to-end event flow between services.

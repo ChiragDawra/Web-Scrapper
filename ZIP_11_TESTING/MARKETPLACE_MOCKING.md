@@ -1,0 +1,1 @@
+Use mocked connectors and recorded responses for repeatable tests.

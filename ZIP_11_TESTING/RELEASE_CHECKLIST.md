@@ -1,0 +1,1 @@
+Lint, tests, migration check, deployment validation, rollback plan.

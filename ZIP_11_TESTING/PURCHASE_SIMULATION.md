@@ -1,0 +1,1 @@
+Simulate purchase execution without placing real orders.
