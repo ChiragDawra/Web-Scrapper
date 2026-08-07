@@ -1,0 +1,1 @@
+Platform is immutable. Amazon deals route only to Amazon Purchase Agent; same for other marketplaces.

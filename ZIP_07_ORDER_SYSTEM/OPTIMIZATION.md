@@ -1,0 +1,1 @@
+Optimization objective: satisfy requested quantity with minimum accounts while honoring platform constraints.

@@ -1,0 +1,1 @@
+Insufficient accounts, limit reached, expired deal after revalidation, queue failure, partial execution.

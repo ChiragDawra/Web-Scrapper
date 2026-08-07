@@ -1,0 +1,1 @@
+Receives PURCHASE_REQUESTED, validates deal, allocates quantity across eligible accounts for the same marketplace.
