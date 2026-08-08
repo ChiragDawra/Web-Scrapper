@@ -1,0 +1,92 @@
+# Root lint/format/type-check configuration. Sprint 0 Task 0.4.
+#
+# Scope is deliberately narrow: REPOSITORY_STRUCTURE.md line 477 defines this
+# file as "root-level lint/format/type-check tool configuration shared across
+# services" — nothing else. No [project] table, no build-system, no dependency
+# declarations. Every service is linted by this one config so a rule can never
+# drift between services.
+#
+# Ruff is the single lint+format tool (IMPLEMENTATION_ROADMAP.md Task 0.4,
+# "one tool choice, applied uniformly"), replacing black/flake8/isort/pyupgrade.
+# mypy covers type-checking, which Ruff does not do.
+
+[tool.ruff]
+line-length = 100
+# No ZIP_13/ZIP_14 document pins a Python version. 3.12 is the floor: every
+# modern syntax feature is available and it has the widest container-image
+# support. Services run in Docker, not on any one developer's host.
+target-version = "py312"
+
+# Frozen architecture (ZIP_13) and prep docs (ZIP_14) are documentation, never
+# linted or reformatted. The ZIP_01-ZIP_12 source archives are equally off-limits.
+extend-exclude = [
+    "ZIP_01_FOUNDATION",
+    "ZIP_02_CORE_ARCHITECTURE",
+    "ZIP_03_DATABASE",
+    "ZIP_04_MARKETPLACE_LAYER",
+    "ZIP_05_DEAL_INTELLIGENCE",
+    "ZIP_06_BOT_SYSTEM",
+    "ZIP_07_ORDER_SYSTEM",
+    "ZIP_08_PURCHASE_AGENTS",
+    "ZIP_09_AI_ML",
+    "ZIP_10_INFRASTRUCTURE",
+    "ZIP_11_TESTING",
+    "ZIP_12_AI_ENGINEERING_SYSTEM",
+    "ZIP_13_ENGINEERING_CONTRACTS",
+    "ZIP_14_IMPLEMENTATION_PREP",
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort — import ordering
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+]
+# Line length is enforced by the formatter, which wraps intelligently; E501 only
+# adds noise for the cases the formatter deliberately leaves long (URLs, strings).
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Alembic revisions are generated-shaped: module-level `revision`/`down_revision`
+# constants are lowercase by Alembic's own convention, not ours to rename.
+"infra/postgres/migrations/versions/*.py" = ["N816"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.12"
+# Shared code only. Every service owns a top-level `src` package, so a single
+# root run sees eleven modules all named "src" and cannot disambiguate them —
+# and the service directories are hyphenated (services/api-gateway), which is
+# not a legal Python package path, so --explicit-package-bases cannot resolve it
+# either. REPOSITORY_STRUCTURE.md already gives each service its own
+# pyproject.toml; service type-checking belongs there, and is logged as a gap
+# rather than patched from here.
+files = ["libs", "infra", "scripts", "tests"]
+
+# Starting point, intentionally not --strict. Requiring annotations on every
+# function from commit one is the rule that actually matters; tightening the rest
+# later is cheap, while retrofitting it after fifteen sprints of code is not.
+disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+
+# Third-party packages are not declared anywhere yet — Task 0.4 owns tool config
+# only, and no Sprint 0 task establishes dependency management (logged as a gap).
+# Without this, mypy fails on every import it cannot resolve rather than on any
+# real type error.
+ignore_missing_imports = true
+
+exclude = "^(ZIP_[0-9]+_|\\.venv/)"
