@@ -1,3 +1,7 @@
 .DS_Store
 .tokensave/
 .claude/
+.code-review-graph/
+
+# redundant source archive; contents already extracted into ZIP_* dirs
+Archive.zip
