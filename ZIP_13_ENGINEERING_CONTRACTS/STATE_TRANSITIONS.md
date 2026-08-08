@@ -173,7 +173,7 @@ EXECUTING --(checkout fails, attempt_count == 3)--> FAILED [terminal]
 Any non-terminal --(unrecoverable error: account banned mid-task, listing removed)--> DEAD_LETTERED [terminal]
 ```
 
-Retry policy: exponential backoff, base 2s, multiplier 2, max 5 attempts
+Retry policy: exponential backoff, base 2s, multiplier 2, max 3 attempts
 before `DEAD_LETTERED` supersedes `FAILED` for infra-level errors (network,
 timeout); business-level failures (price mismatch at checkout, out of stock)
 go straight to `FAILED` without exhausting retries — see

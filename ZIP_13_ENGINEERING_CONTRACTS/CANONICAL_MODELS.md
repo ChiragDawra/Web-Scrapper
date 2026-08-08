@@ -51,6 +51,7 @@ Produced by the Deal Engine's scoring step. Maps onto `deals`.
 ```json
 {
   "listing_id": "UUID, required",
+  "marketplace": "marketplace_code, required — joined from listings/marketplaces at scoring time (Deal Engine owns both tables); carried opaquely through the purchase event chain so no downstream consumer re-derives it via a cross-service read",
   "score": "number, 0-100, required",
   "score_breakdown": {
     "discount_score": "number",
@@ -118,6 +119,8 @@ Order Planner, Inventory Service, Account Service, ML Service.
 ```json
 {
   "purchase_task_id": "UUID, required",
+  "listing_id": "UUID, required — echoed from PURCHASE_TASK_CREATED, needed by Inventory Service's recordAcquisition (SERVICE_INTERFACES.md §8) which has no other source for it",
+  "quantity": "integer, required — echoed from PURCHASE_TASK_CREATED, same reason",
   "success": "boolean, required",
   "marketplace_order_ref": "string, nullable — set only when success=true",
   "actual_price_paid": "integer, paise, nullable — set only when success=true",
