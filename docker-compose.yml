@@ -1,0 +1,64 @@
+# Local development stack. Sprint 0 Task 0.2 — backing services only.
+# Application containers are added by their own sprints, not here.
+#
+# PostgreSQL 16: DATABASE_SCHEMA.md defaults every PK to gen_random_uuid(),
+# which is core since PG13 — no pgcrypto extension required.
+# Redis 7: canonical event bus via Streams + consumer groups (ADR-006), which
+# require Redis >= 5.0.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: businessscrapper-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-businessscrapper}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-businessscrapper}
+      POSTGRES_DB: ${POSTGRES_DB:-businessscrapper}
+      # All timestamps are timestamptz in UTC (ZIP_13 non-negotiable defaults).
+      # The 00:00 IST daily-spend reset is application-scheduled, not a DB concern.
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      # Loopback-bound: reachable by host tooling (Alembic, Task 0.3) but not
+      # exposed off this machine.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # pg_isready confirms the server accepts connections, unlike a port probe,
+      # which passes during crash recovery while queries are still rejected.
+      # -U/-d are required or it probes the wrong default role/database.
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER:-businessscrapper} -d ${POSTGRES_DB:-businessscrapper}
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # First boot runs initdb against an empty volume, which is far slower than
+      # a warm restart; without this, those expected early failures burn retries.
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: businessscrapper-redis
+    restart: unless-stopped
+    # AOF on: Postgres stays the system of record (ADR-010), but this keeps a
+    # container restart from silently dropping in-flight Stream entries.
+    # Flags rather than a mounted redis.conf — infra/redis/redis.conf is still an
+    # empty Task 0.1 placeholder and populating it is outside this task's scope.
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  pgdata:
+  redisdata:
