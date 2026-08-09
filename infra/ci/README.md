@@ -34,9 +34,9 @@ in the root `pyproject.toml`.
 
 ## Known gaps
 
-- **No dependency management.** No Sprint 0 task establishes it, so `pre-commit`
-  and `pytest` are pinned inline in the workflow. Once Sprint 1 introduces a real
-  dependency file, both jobs should install from it instead.
+- ~~No dependency management.~~ Closed at the start of Sprint 1: both jobs
+  install from `requirements-dev.txt`, which pulls in `requirements.txt`.
+  Per-service dependency splits arrive in Sprint 2 with the first real service.
 - **`test` tolerates an empty suite.** `tests/` currently holds only empty Task
   0.1 placeholders, and pytest exits 5 ("no tests collected") rather than 0.
   The job treats 5 as success. Remove that branch once the suite is non-empty,

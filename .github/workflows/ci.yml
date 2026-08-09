@@ -38,10 +38,9 @@ jobs:
 
       # pre-commit is the single entry point: it owns the pinned versions of
       # ruff and mypy in .pre-commit-config.yaml, so CI cannot drift from what
-      # runs on a developer's machine. No Sprint 0 task establishes dependency
-      # management yet, so pre-commit itself is pinned inline here.
-      - name: Install pre-commit
-        run: python -m pip install --disable-pip-version-check pre-commit==4.6.1
+      # runs on a developer's machine.
+      - name: Install tooling
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
       # Building ruff's and mypy's isolated hook environments is the slow part
       # and only changes when the config does.
@@ -64,8 +63,10 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install pytest
-        run: python -m pip install --disable-pip-version-check pytest==9.1.1
+      # Runtime dependencies too, not just pytest — tests import libs/, which
+      # imports redis, jsonschema and SQLAlchemy.
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
       # tests/ holds only empty Task 0.1 placeholders, and pytest exits 5 —
       # "no tests collected" — rather than 0 when it finds nothing. Treating 5 as

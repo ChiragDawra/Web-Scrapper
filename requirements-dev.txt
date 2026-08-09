@@ -1,0 +1,14 @@
+# Development and CI tooling. Runtime dependencies live in requirements.txt.
+#
+#   .venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+
+-r requirements.txt
+
+# Lint, format, type-check. Versions here must match the hook revisions pinned in
+# .pre-commit-config.yaml — pre-commit runs its own isolated copies, so a
+# mismatch means a local `ruff check` disagrees with what the hook enforces.
+ruff==0.16.2
+mypy==2.3.0
+pre-commit==4.6.1
+
+pytest==9.1.1

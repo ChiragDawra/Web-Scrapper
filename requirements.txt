@@ -1,0 +1,23 @@
+# Runtime dependencies, shared across every service.
+#
+# Closes the gap logged in Sprint 0: no roadmap task owned dependency
+# management, so Sprint 0's tooling lived only in an untracked local venv and CI
+# pinned what it needed inline. Sprint 1 writes importable library code, which
+# needs installable dependencies.
+#
+# Exact pins, not ranges — a lockfile-free repo where CI and a developer resolve
+# different versions is how "works on my machine" starts. Per-service dependency
+# splits arrive in Sprint 2 with the first real service.
+#
+#   python -m venv .venv && .venv/bin/pip install -r requirements.txt
+
+# Database. psycopg v3 — the driver in infra/postgres/migrations/env.py's URL.
+SQLAlchemy==2.0.51
+alembic==1.19.0
+psycopg[binary]==3.3.4
+
+# Event bus: Redis Streams + consumer groups (EVENT_SCHEMAS.md, ADR-010).
+redis==8.1.0
+
+# Envelope and per-event-type payload validation (EVENT_SCHEMAS.md §1-§7).
+jsonschema==4.26.0
