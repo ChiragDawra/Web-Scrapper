@@ -62,6 +62,14 @@ ignore = ["E501"]
 [tool.ruff.format]
 docstring-code-format = true
 
+[tool.pytest.ini_options]
+# libs/ is imported as a top-level package from the repo root; without this,
+# pytest's default sys.path handling only reaches the test file's own directory.
+pythonpath = ["."]
+testpaths = ["tests"]
+# Existing suites use the *_test.py suffix (tests/e2e/), so accept both spellings.
+python_files = ["test_*.py", "*_test.py"]
+
 [tool.mypy]
 python_version = "3.12"
 # Shared code only. Every service owns a top-level `src` package, so a single
@@ -72,6 +80,14 @@ python_version = "3.12"
 # pyproject.toml; service type-checking belongs there, and is logged as a gap
 # rather than patched from here.
 files = ["libs", "infra", "scripts", "tests"]
+
+# libs/ is a namespace package with no __init__.py of its own
+# (REPOSITORY_STRUCTURE.md §3 gives one to each subpackage, not to libs itself).
+# Without these, mypy resolves libs/enums/enums.py as both "enums.enums" and
+# "libs.enums.enums" and refuses to continue.
+mypy_path = "."
+explicit_package_bases = true
+namespace_packages = true
 
 # Starting point, intentionally not --strict. Requiring annotations on every
 # function from commit one is the rule that actually matters; tightening the rest
