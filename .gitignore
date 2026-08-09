@@ -1,6 +1,11 @@
 .DS_Store
 .venv/
 __pycache__/
+
+# Real secrets. Only .env.example — placeholders — is ever committed.
+.env
+.env.*
+!.env.example
 .tokensave/
 .claude/
 .code-review-graph/
