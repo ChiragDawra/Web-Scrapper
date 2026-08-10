@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spectre.internal/schema/envelope.json",
+  "title": "Event envelope",
+  "description": "EVENT_SCHEMAS.md §1. Every event on the bus is wrapped in this envelope and validated before publish. Maps 1:1 onto the `events` table (DATABASE_SCHEMA.md §13); `seq` and `stored_at` are assigned by the Event Store Consumer on write and are never set by producers, so they are not envelope fields. `payload` is validated separately against the per-event-type schema (EVENT_SCHEMAS.md §2-§7).",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "version",
+    "producer_service",
+    "produced_at",
+    "payload"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "description": "UUID, required — idempotency key, unique per event instance.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "description": "string, required — e.g. DEAL_SCORED. Not constrained to a fixed set here: EVENT_SCHEMAS.md §1 types this as a bare string, and the known-type check belongs to per-event-type payload validation.",
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "description": "integer, required — schema version of this event_type, starts at 1.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "correlation_id": {
+      "description": "UUID, nullable — ties a causal chain together (e.g. all events for one order).",
+      "type": ["string", "null"],
+      "format": "uuid"
+    },
+    "producer_service": {
+      "description": "event_producer_service enum, required (ENUMS.md).",
+      "type": "string",
+      "enum": [
+        "marketplace-connector",
+        "deal-engine",
+        "revalidation-service",
+        "telegram-bot",
+        "order-planner",
+        "account-service",
+        "inventory-service",
+        "purchase-agent",
+        "event-store-consumer",
+        "api-gateway",
+        "ml-service"
+      ]
+    },
+    "produced_at": {
+      "description": "timestamptz, required, ISO-8601.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "description": "object, required — shape defined per event_type in EVENT_SCHEMAS.md §2-§7.",
+      "type": "object"
+    }
+  }
+}

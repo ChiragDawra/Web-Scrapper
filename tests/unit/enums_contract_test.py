@@ -19,11 +19,7 @@ import pytest
 
 from libs import enums
 
-CONTRACT = (
-    Path(__file__).resolve().parents[2]
-    / "ZIP_13_ENGINEERING_CONTRACTS"
-    / "ENUMS.md"
-)
+CONTRACT = Path(__file__).resolve().parents[2] / "ZIP_13_ENGINEERING_CONTRACTS" / "ENUMS.md"
 
 # Enum names in ENUMS.md are snake_case headings; the classes are PascalCase.
 HEADING_TO_CLASS = {

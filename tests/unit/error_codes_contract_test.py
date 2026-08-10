@@ -19,11 +19,7 @@ import pytest
 from libs.enums import ErrorSeverity
 from libs.error_codes import ERROR_CODES, get_error_code
 
-CONTRACT = (
-    Path(__file__).resolve().parents[2]
-    / "ZIP_13_ENGINEERING_CONTRACTS"
-    / "ERROR_CODES.md"
-)
+CONTRACT = Path(__file__).resolve().parents[2] / "ZIP_13_ENGINEERING_CONTRACTS" / "ERROR_CODES.md"
 
 ROW = re.compile(
     r"^\|\s*`([A-Z][A-Z0-9_]*)`\s*\|\s*(.+?)\s*\|\s*(INFO|WARNING|ERROR|CRITICAL)\s*\|\s*(.+?)\s*\|$",
