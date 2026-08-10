@@ -39,6 +39,8 @@ __all__ = [
     "EventSchemaInvalidError",
     "format_schema_errors",
     "load_envelope_schema",
+    "parse_timestamp",
+    "parse_uuid",
     "validate_envelope",
 ]
 
@@ -93,14 +95,16 @@ def validate_envelope(data: Mapping[str, Any]) -> None:
         raise EventSchemaInvalidError(reason)
 
 
-def _parse_uuid(value: Any, field: str) -> UUID:
+def parse_uuid(value: Any, field: str) -> UUID:
+    """Parse one wire UUID field. Public because `libs.canonical_models` parses the same shapes."""
     try:
         return UUID(str(value))
     except (ValueError, AttributeError, TypeError) as exc:
         raise EventSchemaInvalidError(f"{field}: not a valid UUID") from exc
 
 
-def _parse_timestamp(value: Any, field: str) -> datetime:
+def parse_timestamp(value: Any, field: str) -> datetime:
+    """Parse one wire timestamptz field. Public for the same reason as `parse_uuid`."""
     try:
         parsed = datetime.fromisoformat(str(value))
     except (ValueError, TypeError) as exc:
@@ -176,14 +180,14 @@ class Envelope:
         validate_envelope(data)
         raw_correlation = data.get("correlation_id")
         return cls(
-            event_id=_parse_uuid(data["event_id"], "event_id"),
+            event_id=parse_uuid(data["event_id"], "event_id"),
             event_type=data["event_type"],
             version=data["version"],
             producer_service=EventProducerService(data["producer_service"]),
-            produced_at=_parse_timestamp(data["produced_at"], "produced_at"),
+            produced_at=parse_timestamp(data["produced_at"], "produced_at"),
             payload=data["payload"],
             correlation_id=(
-                _parse_uuid(raw_correlation, "correlation_id")
+                parse_uuid(raw_correlation, "correlation_id")
                 if raw_correlation is not None
                 else None
             ),
