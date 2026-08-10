@@ -84,3 +84,17 @@ jobs:
             exit 0
           fi
           exit "$status"
+
+      # One pytest session per service, not one session over all of them: every
+      # service owns a top-level `src` package, so a combined run would see
+      # eleven different modules all named `src`. Each service's own
+      # pyproject.toml carries the pythonpath that makes this work.
+      - name: Run per-service tests
+        run: |
+          for service in services/*/; do
+            if find "$service/tests" \( -name '*_test.py' -o -name 'test_*.py' \) | grep -q .; then
+              echo "::group::${service}"
+              (cd "$service" && pytest -q)
+              echo "::endgroup::"
+            fi
+          done

@@ -1,0 +1,16 @@
+# Event Store Consumer — per-service test configuration. Sprint 1 Task 1.8.
+#
+# Lint, format and type-check config stays at the repo root so a rule cannot
+# drift between services. What cannot live at the root is pytest: every service
+# owns a top-level `src` package (REPOSITORY_STRUCTURE.md), so eleven services
+# collected in one session would be eleven modules named `src`. Each service
+# therefore runs its own pytest session from its own directory, which is what
+# this file configures.
+#
+#   cd services/event-store-consumer && pytest
+
+[tool.pytest.ini_options]
+# `.` for this service's `src`, the repo root for `libs`.
+pythonpath = [".", "../.."]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
