@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "purchase_task_created.json",
+  "title": "PURCHASE_TASK_CREATED payload",
+  "description": "EVENT_SCHEMAS.md §4. Producer: order-planner. Consumer: purchase-agent — one event per allocated account.",
+  "type": "object",
+  "required": [
+    "purchase_task_id",
+    "order_id",
+    "account_id",
+    "listing_id",
+    "marketplace",
+    "quantity",
+    "max_price"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "purchase_task_id": { "$ref": "common.json#/$defs/uuid" },
+    "order_id": { "$ref": "common.json#/$defs/uuid" },
+    "account_id": { "$ref": "common.json#/$defs/uuid" },
+    "listing_id": { "$ref": "common.json#/$defs/uuid" },
+    "marketplace": {
+      "description": "Tells the Purchase Agent which connector-specific checkout automation to run.",
+      "$ref": "common.json#/$defs/marketplace_code"
+    },
+    "quantity": { "type": "integer" },
+    "max_price": {
+      "description": "paise. Checkout aborts if price exceeds this — PURCH_PRICE_MISMATCH, zero tolerance (VALIDATION_RULES.md §5).",
+      "$ref": "common.json#/$defs/paise"
+    }
+  }
+}

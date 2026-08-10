@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "deal_revalidation_request.json",
+  "title": "DEAL_REVALIDATION_REQUEST payload",
+  "description": "EVENT_SCHEMAS.md §3. Producer: telegram-bot. Consumer: revalidation-service.",
+  "type": "object",
+  "required": ["deal_id", "listing_id", "correlation_id"],
+  "additionalProperties": false,
+  "properties": {
+    "deal_id": { "$ref": "common.json#/$defs/uuid" },
+    "listing_id": { "$ref": "common.json#/$defs/uuid" },
+    "correlation_id": {
+      "description": "Required in the payload (not merely in the envelope) and set to deal_id, so all revalidation rounds for one deal thread together.",
+      "$ref": "common.json#/$defs/uuid"
+    }
+  }
+}

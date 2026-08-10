@@ -21,3 +21,7 @@ redis==8.1.0
 
 # Envelope and per-event-type payload validation (EVENT_SCHEMAS.md §1-§7).
 jsonschema==4.26.0
+# jsonschema's own $ref resolver, imported directly by libs/event_bus/payloads.py
+# to build the local schema registry — pinned here rather than left to float as a
+# transitive dependency, since we import it.
+referencing==0.37.0

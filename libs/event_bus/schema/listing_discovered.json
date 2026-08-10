@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "listing_discovered.json",
+  "title": "LISTING_DISCOVERED payload",
+  "description": "EVENT_SCHEMAS.md §2. Producer: marketplace-connector. Consumer: deal-engine.",
+  "type": "object",
+  "required": ["product"],
+  "additionalProperties": false,
+  "properties": {
+    "product": { "$ref": "canonical_models.json#/$defs/CanonicalProduct" }
+  }
+}

@@ -17,7 +17,7 @@ This module answers one question only — is this a well-formed envelope.
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import lru_cache
@@ -26,6 +26,7 @@ from typing import Any, ClassVar, Final
 from uuid import UUID, uuid4
 
 from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema.exceptions import ValidationError
 
 from libs.enums import EventProducerService
 from libs.error_codes import ErrorCode
@@ -33,8 +34,10 @@ from libs.error_codes.error_codes import SYS_EVENT_SCHEMA_INVALID
 
 __all__ = [
     "ENVELOPE_SCHEMA_PATH",
+    "SCHEMA_DIR",
     "Envelope",
     "EventSchemaInvalidError",
+    "format_schema_errors",
     "load_envelope_schema",
     "validate_envelope",
 ]
@@ -71,17 +74,22 @@ def _envelope_validator() -> Draft202012Validator:
     return Draft202012Validator(load_envelope_schema(), format_checker=FormatChecker())
 
 
-def validate_envelope(data: Mapping[str, Any]) -> None:
-    """Validate a raw envelope dict, raising `EventSchemaInvalidError` on the first failure.
+def format_schema_errors(errors: Iterable[ValidationError]) -> str:
+    """Render validation errors as `field/path: message`, joined, deepest path last.
 
     Reports every failure, not just the first, so a producer fixing a malformed
-    envelope doesn't have to discover its problems one publish at a time.
+    event doesn't have to discover its problems one publish at a time.
     """
-    errors = sorted(_envelope_validator().iter_errors(data), key=lambda e: list(e.absolute_path))
-    if errors:
-        reason = "; ".join(
-            f"{'/'.join(str(p) for p in e.absolute_path) or '<root>'}: {e.message}" for e in errors
-        )
+    ordered = sorted(errors, key=lambda e: list(map(str, e.absolute_path)))
+    return "; ".join(
+        f"{'/'.join(str(p) for p in e.absolute_path) or '<root>'}: {e.message}" for e in ordered
+    )
+
+
+def validate_envelope(data: Mapping[str, Any]) -> None:
+    """Validate a raw envelope dict. Raises `EventSchemaInvalidError` if it is malformed."""
+    reason = format_schema_errors(_envelope_validator().iter_errors(data))
+    if reason:
         raise EventSchemaInvalidError(reason)
 
 

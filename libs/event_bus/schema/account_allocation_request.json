@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "account_allocation_request.json",
+  "title": "ACCOUNT_ALLOCATION_REQUEST payload",
+  "description": "EVENT_SCHEMAS.md §4. Producer: order-planner. Consumer: account-service.",
+  "type": "object",
+  "required": ["order_id", "marketplace", "requested_quantity", "correlation_id"],
+  "additionalProperties": false,
+  "properties": {
+    "order_id": { "$ref": "common.json#/$defs/uuid" },
+    "marketplace": { "$ref": "common.json#/$defs/marketplace_code" },
+    "requested_quantity": {
+      "description": "> 0 (VALIDATION_RULES.md §4).",
+      "type": "integer",
+      "exclusiveMinimum": 0
+    },
+    "correlation_id": {
+      "description": "Required in the payload and set to order_id.",
+      "$ref": "common.json#/$defs/uuid"
+    }
+  }
+}

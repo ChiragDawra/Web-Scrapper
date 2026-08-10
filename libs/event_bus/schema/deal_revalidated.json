@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "deal_revalidated.json",
+  "title": "DEAL_REVALIDATED payload",
+  "description": "EVENT_SCHEMAS.md §3, carrying a RevalidationResult (CANONICAL_MODELS.md) flat. Producer: revalidation-service. Consumer: telegram-bot. The Bot's 30s timeout on this event is behaviour, not schema (STATE_TRANSITIONS.md §1, REVAL_TIMEOUT).",
+  "type": "object",
+  "required": ["deal_id", "listing_id", "current_price", "in_stock", "changed", "checked_at"],
+  "additionalProperties": false,
+  "properties": {
+    "deal_id": { "$ref": "common.json#/$defs/uuid" },
+    "listing_id": { "$ref": "common.json#/$defs/uuid" },
+    "current_price": { "$ref": "common.json#/$defs/paise" },
+    "in_stock": { "type": "boolean" },
+    "changed": {
+      "description": "RevalidationResult.changed — true if price delta > 2% or in_stock flipped (VALIDATION_RULES.md §5 owns the 2% tolerance).",
+      "type": "boolean"
+    },
+    "checked_at": { "$ref": "common.json#/$defs/timestamptz" }
+  }
+}

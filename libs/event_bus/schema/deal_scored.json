@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "deal_scored.json",
+  "title": "DEAL_SCORED payload",
+  "description": "EVENT_SCHEMAS.md §2. Producer: deal-engine. Consumer: telegram-bot.",
+  "type": "object",
+  "required": [
+    "deal_id",
+    "listing_id",
+    "marketplace",
+    "score",
+    "score_breakdown",
+    "detected_price",
+    "reference_price",
+    "discount_pct",
+    "expires_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "deal_id": { "$ref": "common.json#/$defs/uuid" },
+    "listing_id": { "$ref": "common.json#/$defs/uuid" },
+    "marketplace": {
+      "description": "Joined from listings/marketplaces at publish time (Deal Engine owns both tables); carried opaquely by every downstream consumer of this deal so no one re-derives it via a cross-service read.",
+      "$ref": "common.json#/$defs/marketplace_code"
+    },
+    "score": {
+      "description": "0-100 (CANONICAL_MODELS.md §ScoredDeal).",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "score_breakdown": { "$ref": "canonical_models.json#/$defs/ScoreBreakdown" },
+    "detected_price": { "$ref": "common.json#/$defs/paise" },
+    "reference_price": { "$ref": "common.json#/$defs/paise" },
+    "discount_pct": { "type": "number" },
+    "expires_at": { "$ref": "common.json#/$defs/timestamptz" }
+  }
+}

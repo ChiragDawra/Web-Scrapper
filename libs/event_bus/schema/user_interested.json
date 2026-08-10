@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "user_interested.json",
+  "title": "USER_INTERESTED payload",
+  "description": "EVENT_SCHEMAS.md §3. Producer: telegram-bot. Consumer: deal-engine. Never emitted for an expired deal — STATE_TRANSITIONS.md §1 \"Tap-after-expiry\" guard, which is the Bot's to enforce, not this schema's.",
+  "type": "object",
+  "required": ["deal_id", "telegram_user_id"],
+  "additionalProperties": false,
+  "properties": {
+    "deal_id": { "$ref": "common.json#/$defs/uuid" },
+    "telegram_user_id": { "$ref": "common.json#/$defs/uuid" }
+  }
+}

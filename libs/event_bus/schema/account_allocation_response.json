@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "account_allocation_response.json",
+  "title": "ACCOUNT_ALLOCATION_RESPONSE payload",
+  "description": "EVENT_SCHEMAS.md §4. Producer: account-service. Consumer: order-planner. The Planner's 10s timeout and 3 retries before dead-lettering are behaviour, not schema (PLAN_ALLOCATION_TIMEOUT, ERROR_CODES.md).",
+  "type": "object",
+  "required": ["allocation_plan"],
+  "additionalProperties": false,
+  "properties": {
+    "allocation_plan": { "$ref": "canonical_models.json#/$defs/AllocationPlan" }
+  }
+}

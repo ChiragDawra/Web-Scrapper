@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "purchase_failed.json",
+  "title": "PURCHASE_FAILED payload",
+  "description": "EVENT_SCHEMAS.md §5. Producer: purchase-agent. Consumers: order-planner, account-service, telegram-bot, ml-service. Carries the same purchase_task_id correlation as PURCHASE_COMPLETED so the Planner can match outcomes to order_items rows 1:1.",
+  "type": "object",
+  "required": ["outcome"],
+  "additionalProperties": false,
+  "properties": {
+    "outcome": {
+      "description": "PurchaseOutcome with success=false.",
+      "$ref": "canonical_models.json#/$defs/PurchaseOutcome",
+      "properties": {
+        "success": { "const": false }
+      }
+    }
+  }
+}

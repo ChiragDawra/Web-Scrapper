@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "event_dead_lettered.json",
+  "title": "EVENT_DEAD_LETTERED payload",
+  "description": "EVENT_SCHEMAS.md §7. Producer: whichever service exhausted retries. Consumer: none required (observability only). The event itself is moved to a per-consumer DLQ stream `{event_type}.dlq.{consumer_service}`; replay is manual via the Admin Dashboard, never automatic.",
+  "type": "object",
+  "required": [
+    "original_event_id",
+    "original_event_type",
+    "consumer_service",
+    "error_code",
+    "attempt_count"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "original_event_id": { "$ref": "common.json#/$defs/uuid" },
+    "original_event_type": { "type": "string", "minLength": 1 },
+    "consumer_service": {
+      "description": "Which consumer gave up (event_producer_service enum).",
+      "$ref": "common.json#/$defs/event_producer_service"
+    },
+    "error_code": {
+      "description": "SYS_DEAD_LETTERED, fixed.",
+      "const": "SYS_DEAD_LETTERED"
+    },
+    "attempt_count": { "type": "integer" }
+  }
+}

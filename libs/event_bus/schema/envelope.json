@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://spectre.internal/schema/envelope.json",
+  "$id": "envelope.json",
   "title": "Event envelope",
   "description": "EVENT_SCHEMAS.md §1. Every event on the bus is wrapped in this envelope and validated before publish. Maps 1:1 onto the `events` table (DATABASE_SCHEMA.md §13); `seq` and `stored_at` are assigned by the Event Store Consumer on write and are never set by producers, so they are not envelope fields. `payload` is validated separately against the per-event-type schema (EVENT_SCHEMAS.md §2-§7).",
   "type": "object",

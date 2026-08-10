@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "canonical_models.json",
+  "title": "Canonical models",
+  "description": "CANONICAL_MODELS.md. Referenced by the event payload schemas that carry a whole model rather than a flat field list (LISTING_DISCOVERED, ACCOUNT_ALLOCATION_RESPONSE, PURCHASE_COMPLETED, PURCHASE_FAILED). Cross-field rules that JSON Schema cannot express (mrp >= price, fully_satisfied consistency, success/field coupling) are enforced by the producing service per VALIDATION_RULES.md §1, §4, §5 — not weakened here, just not expressible.",
+  "$defs": {
+    "CanonicalProduct": {
+      "description": "CANONICAL_MODELS.md §CanonicalProduct. Field-level rules from VALIDATION_RULES.md §1 are applied here where JSON Schema can express them.",
+      "type": "object",
+      "required": [
+        "canonical_title",
+        "marketplace",
+        "external_listing_id",
+        "url",
+        "price",
+        "in_stock"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "canonical_title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "brand_name": {
+          "description": "nullable — connector best-effort extraction.",
+          "type": ["string", "null"]
+        },
+        "category": { "type": ["string", "null"] },
+        "subcategory": { "type": ["string", "null"] },
+        "attributes": {
+          "description": "Open map. `size`/`color`/`variant` are the three keys the Deal Engine reads; any other key is carried through opaquely and not interpreted downstream.",
+          "type": "object",
+          "properties": {
+            "size": { "type": "string" },
+            "color": { "type": "string" },
+            "variant": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "image_url": { "type": ["string", "null"], "format": "uri" },
+        "marketplace": { "$ref": "common.json#/$defs/marketplace_code" },
+        "external_listing_id": {
+          "description": "ASIN/FSN/SKU. Unique per marketplace (dedup key) — uniqueness is a database constraint, not a schema one.",
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "description": "Host must match the marketplace's known domain(s), checked by the connector's validator (VALIDATION_RULES.md §1).",
+          "type": "string",
+          "format": "uri"
+        },
+        "price": { "type": "integer", "exclusiveMinimum": 0 },
+        "mrp": {
+          "description": "nullable; if present must be >= price (VALIDATION_RULES.md §1, cross-field).",
+          "type": ["integer", "null"]
+        },
+        "currency": { "$ref": "common.json#/$defs/currency_code", "default": "INR" },
+        "rating": {
+          "type": ["number", "null"],
+          "minimum": 0.0,
+          "maximum": 5.0
+        },
+        "review_count": { "type": ["integer", "null"], "minimum": 0 },
+        "in_stock": {
+          "description": "Connectors must not omit; infer false if the response gives no positive stock signal, never leave null.",
+          "type": "boolean"
+        }
+      }
+    },
+    "ScoreBreakdown": {
+      "description": "CANONICAL_MODELS.md §ScoredDeal.score_breakdown. Stored verbatim and never recomputed — it is the audit trail for why a deal was surfaced, and an ML training feature.",
+      "type": "object",
+      "required": [
+        "discount_score",
+        "brand_score",
+        "rating_score",
+        "velocity_score",
+        "weights_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "discount_score": { "type": "number" },
+        "brand_score": { "type": "number" },
+        "rating_score": { "type": "number" },
+        "velocity_score": { "type": "number" },
+        "weights_version": {
+          "description": "Which scoring config version produced this.",
+          "type": "string"
+        }
+      }
+    },
+    "AllocationPlan": {
+      "description": "CANONICAL_MODELS.md §AllocationPlan. An empty `allocations` array with fully_satisfied=false is a valid response and drives PLANNING_FAILED.",
+      "type": "object",
+      "required": ["order_id", "requested_quantity", "allocations", "fully_satisfied"],
+      "additionalProperties": false,
+      "properties": {
+        "order_id": { "$ref": "common.json#/$defs/uuid" },
+        "requested_quantity": { "type": "integer", "exclusiveMinimum": 0 },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["account_id", "quantity"],
+            "additionalProperties": false,
+            "properties": {
+              "account_id": { "$ref": "common.json#/$defs/uuid" },
+              "quantity": { "type": "integer" }
+            }
+          }
+        },
+        "fully_satisfied": {
+          "description": "true if sum(allocations.quantity) == requested_quantity. Order Planner trusts this flag as-is and does not recompute it (VALIDATION_RULES.md §5).",
+          "type": "boolean"
+        }
+      }
+    },
+    "PurchaseOutcome": {
+      "description": "CANONICAL_MODELS.md §PurchaseOutcome. `marketplace_order_ref`/`actual_price_paid` are set only when success=true, `error_code` only when success=false — a coupling enforced by the Purchase Agent, since expressing it here would mean two variant schemas for one documented model.",
+      "type": "object",
+      "required": [
+        "purchase_task_id",
+        "listing_id",
+        "quantity",
+        "success",
+        "attempt_count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "purchase_task_id": { "$ref": "common.json#/$defs/uuid" },
+        "listing_id": {
+          "description": "Echoed from PURCHASE_TASK_CREATED, needed by Inventory Service's recordAcquisition which has no other source for it.",
+          "$ref": "common.json#/$defs/uuid"
+        },
+        "quantity": {
+          "description": "Echoed from PURCHASE_TASK_CREATED, same reason.",
+          "type": "integer"
+        },
+        "success": { "type": "boolean" },
+        "marketplace_order_ref": { "type": ["string", "null"] },
+        "actual_price_paid": {
+          "type": ["integer", "null"],
+          "description": "paise"
+        },
+        "error_code": {
+          "description": "One of ERROR_CODES.md, set only when success=false.",
+          "type": ["string", "null"]
+        },
+        "attempt_count": { "type": "integer" }
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.json",
+  "title": "Shared primitive types",
+  "description": "Types repeated across the per-event-type schemas (EVENT_SCHEMAS.md §2-§7). Defined once so a value set cannot drift between two event schemas. Enum members are transcribed from ENUMS.md; a contract test asserts they still match libs.enums.",
+  "$defs": {
+    "uuid": {
+      "description": "UUID v4 — every internal entity primary key (ZIP_13 README, resolves Q29).",
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamptz": {
+      "description": "timestamptz, UTC, ISO-8601 on the wire (ZIP_13 README).",
+      "type": "string",
+      "format": "date-time"
+    },
+    "paise": {
+      "description": "Money: integer minor units (paise), currency fixed to INR for MVP (ZIP_13 README).",
+      "type": "integer"
+    },
+    "marketplace_code": {
+      "description": "ENUMS.md §marketplace_code.",
+      "type": "string",
+      "enum": ["AMAZON", "FLIPKART", "MYNTRA", "NYKAA"]
+    },
+    "currency_code": {
+      "description": "ENUMS.md §currency_code.",
+      "type": "string",
+      "enum": ["INR"]
+    },
+    "account_status": {
+      "description": "ENUMS.md §account_status.",
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "WARNING",
+        "COOLDOWN",
+        "SUSPENDED",
+        "BANNED",
+        "DISABLED_MANUAL"
+      ]
+    },
+    "event_producer_service": {
+      "description": "ENUMS.md §event_producer_service.",
+      "type": "string",
+      "enum": [
+        "marketplace-connector",
+        "deal-engine",
+        "revalidation-service",
+        "telegram-bot",
+        "order-planner",
+        "account-service",
+        "inventory-service",
+        "purchase-agent",
+        "event-store-consumer",
+        "api-gateway",
+        "ml-service"
+      ]
+    }
+  }
+}
