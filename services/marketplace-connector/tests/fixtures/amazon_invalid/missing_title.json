@@ -1,0 +1,17 @@
+{
+  "ASIN": "B0NOTITLE1",
+  "DetailPageURL": "https://www.amazon.in/dp/B0NOTITLE1",
+  "ItemInfo": {
+    "ByLineInfo": { "Brand": { "DisplayValue": "Unbranded" } },
+    "Classifications": { "ProductGroup": { "DisplayValue": "Electronics" } }
+  },
+  "Offers": {
+    "Listings": [
+      {
+        "Id": "listing-b0notitle1-1",
+        "Price": { "Amount": 499.0, "Currency": "INR" },
+        "Availability": { "Type": "Now", "Message": "In Stock." }
+      }
+    ]
+  }
+}

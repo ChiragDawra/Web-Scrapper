@@ -1,0 +1,71 @@
+{
+  "ItemsResult": {
+    "Items": [
+      {
+        "ASIN": "B0CRATED01",
+        "DetailPageURL": "https://www.amazon.in/dp/B0CRATED01",
+        "ItemInfo": {
+          "Title": { "DisplayValue": "Lakme Absolute Skin Dew Satin Serum Foundation" },
+          "ByLineInfo": {
+            "Brand": { "DisplayValue": "Lakme" }
+          },
+          "Classifications": {
+            "ProductGroup": { "DisplayValue": "Beauty" }
+          },
+          "ProductInfo": {
+            "Size": { "DisplayValue": "30 ml" },
+            "Color": { "DisplayValue": "Warm Ivory" }
+          }
+        },
+        "BrowseNodeInfo": {
+          "BrowseNodes": [{ "Id": "1374446031", "DisplayName": "Foundation" }]
+        },
+        "Images": {
+          "Primary": {
+            "Large": { "URL": "https://m.media-amazon.com/images/I/B0CRATED01.jpg" }
+          }
+        },
+        "CustomerReviews": {
+          "StarRating": { "Value": 4.3 },
+          "Count": 1520
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b0crated01-1",
+              "Price": { "Amount": 1049.5, "Currency": "INR" },
+              "SavingBasis": { "Amount": 1500.0, "Currency": "INR" },
+              "Availability": { "Message": "Only 3 left in stock - order soon." },
+              "MerchantInfo": { "Name": "Cloudtail India" }
+            }
+          ]
+        }
+      },
+      {
+        "ASIN": "B08OUTOFST",
+        "DetailPageURL": "https://www.amazon.in/dp/B08OUTOFST",
+        "ItemInfo": {
+          "Title": { "DisplayValue": "Nike Revolution 6 Running Shoes" },
+          "ByLineInfo": {
+            "Brand": { "DisplayValue": "Nike" }
+          },
+          "Classifications": {
+            "ProductGroup": { "DisplayValue": "Shoes" }
+          },
+          "ProductInfo": {
+            "Size": { "DisplayValue": "UK 9" }
+          }
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b08outofst-1",
+              "Price": { "Amount": 2795.0, "Currency": "INR" },
+              "Availability": { "Message": "Currently unavailable." }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

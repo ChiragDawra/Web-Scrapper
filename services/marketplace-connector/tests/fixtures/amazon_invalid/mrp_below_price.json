@@ -1,0 +1,18 @@
+{
+  "ASIN": "B0BADMRP01",
+  "DetailPageURL": "https://www.amazon.in/dp/B0BADMRP01",
+  "ItemInfo": {
+    "Title": { "DisplayValue": "Philips Air Fryer HD9200" },
+    "ByLineInfo": { "Brand": { "DisplayValue": "Philips" } }
+  },
+  "Offers": {
+    "Listings": [
+      {
+        "Id": "listing-b0badmrp01-1",
+        "Price": { "Amount": 8999.0, "Currency": "INR" },
+        "SavingBasis": { "Amount": 7499.0, "Currency": "INR" },
+        "Availability": { "Type": "Now", "Message": "In Stock." }
+      }
+    ]
+  }
+}

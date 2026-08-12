@@ -1,0 +1,103 @@
+{
+  "SearchResult": {
+    "TotalResultCount": 3,
+    "SearchURL": "https://www.amazon.in/s?k=headphones",
+    "Items": [
+      {
+        "ASIN": "B0BXBQ7C4X",
+        "DetailPageURL": "https://www.amazon.in/dp/B0BXBQ7C4X",
+        "ItemInfo": {
+          "Title": {
+            "DisplayValue": "  Sony WH-1000XM5 Wireless Noise Cancelling Headphones  ",
+            "Label": "Title"
+          },
+          "ByLineInfo": {
+            "Brand": { "DisplayValue": "Sony" },
+            "Manufacturer": { "DisplayValue": "Sony India Pvt Ltd" }
+          },
+          "Classifications": {
+            "ProductGroup": { "DisplayValue": "Electronics" }
+          },
+          "ProductInfo": {
+            "Color": { "DisplayValue": "Midnight Black" }
+          }
+        },
+        "BrowseNodeInfo": {
+          "BrowseNodes": [
+            { "Id": "1388921031", "DisplayName": "Over-Ear Headphones" }
+          ]
+        },
+        "Images": {
+          "Primary": {
+            "Large": { "URL": "https://m.media-amazon.com/images/I/B0BXBQ7C4X.jpg" }
+          }
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b0bxbq7c4x-1",
+              "Price": { "Amount": 24999.0, "Currency": "INR" },
+              "SavingBasis": { "Amount": 34990.0, "Currency": "INR" },
+              "Availability": { "Type": "Now", "Message": "In Stock." },
+              "MerchantInfo": { "Name": "Appario Retail Private Ltd" }
+            }
+          ]
+        }
+      },
+      {
+        "ASIN": "B09NOMRP01",
+        "DetailPageURL": "https://www.amazon.in/dp/B09NOMRP01",
+        "ItemInfo": {
+          "Title": { "DisplayValue": "Boat Airdopes 141 Bluetooth Truly Wireless Earbuds" },
+          "ByLineInfo": {
+            "Manufacturer": { "DisplayValue": "Imagine Marketing Ltd" }
+          },
+          "Classifications": {
+            "ProductGroup": { "DisplayValue": "Electronics" }
+          },
+          "ProductInfo": {
+            "Color": { "DisplayValue": "Bold Black" }
+          }
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b09nomrp01-1",
+              "Price": { "Amount": 899.99, "Currency": "INR" },
+              "Availability": { "Type": "Now", "Message": "In Stock." }
+            }
+          ]
+        }
+      },
+      {
+        "ASIN": "B07NOSTOCK",
+        "DetailPageURL": "https://www.amazon.in/dp/B07NOSTOCK",
+        "ItemInfo": {
+          "Title": { "DisplayValue": "Levi's Men's 511 Slim Fit Jeans" },
+          "ByLineInfo": {
+            "Brand": { "DisplayValue": "Levi's" }
+          },
+          "Classifications": {
+            "ProductGroup": { "DisplayValue": "Apparel" }
+          },
+          "ProductInfo": {
+            "Size": { "DisplayValue": "34W x 32L" },
+            "Color": { "DisplayValue": "Indigo" }
+          }
+        },
+        "BrowseNodeInfo": {
+          "BrowseNodes": [{ "Id": "1968256031", "DisplayName": "Men's Jeans" }]
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b07nostock-1",
+              "Price": { "Amount": 2199.0, "Currency": "INR" },
+              "SavingBasis": { "Amount": 3999.0, "Currency": "INR" }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "ASIN": "B0USHOST01",
+  "DetailPageURL": "https://www.amazon.com/dp/B0USHOST01",
+  "ItemInfo": {
+    "Title": { "DisplayValue": "Kindle Paperwhite 11th Generation" },
+    "ByLineInfo": { "Brand": { "DisplayValue": "Amazon" } }
+  },
+  "Offers": {
+    "Listings": [
+      {
+        "Id": "listing-b0ushost01-1",
+        "Price": { "Amount": 13999.0, "Currency": "INR" },
+        "Availability": { "Type": "Now", "Message": "In Stock." }
+      }
+    ]
+  }
+}
