@@ -1,0 +1,60 @@
+{
+  "SearchResult": {
+    "TotalResultCount": 3,
+    "Items": [
+      {
+        "ASIN": "B0GOODONE1",
+        "DetailPageURL": "https://www.amazon.in/dp/B0GOODONE1",
+        "ItemInfo": {
+          "Title": { "DisplayValue": "Logitech MX Master 3S Wireless Mouse" },
+          "ByLineInfo": { "Brand": { "DisplayValue": "Logitech" } },
+          "Classifications": { "ProductGroup": { "DisplayValue": "Personal Computer" } }
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b0goodone1-1",
+              "Price": { "Amount": 8495.0, "Currency": "INR" },
+              "Availability": { "Type": "Now", "Message": "In Stock." }
+            }
+          ]
+        }
+      },
+      {
+        "ASIN": "B0MIDBAD01",
+        "DetailPageURL": "https://www.amazon.in/dp/B0MIDBAD01",
+        "ItemInfo": {
+          "ByLineInfo": { "Brand": { "DisplayValue": "Unbranded" } }
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b0midbad01-1",
+              "Price": { "Amount": 1299.0, "Currency": "INR" },
+              "Availability": { "Type": "Now", "Message": "In Stock." }
+            }
+          ]
+        }
+      },
+      {
+        "ASIN": "B0GOODTWO2",
+        "DetailPageURL": "https://www.amazon.in/dp/B0GOODTWO2",
+        "ItemInfo": {
+          "Title": { "DisplayValue": "Anker PowerCore 20000mAh Power Bank" },
+          "ByLineInfo": { "Brand": { "DisplayValue": "Anker" } },
+          "Classifications": { "ProductGroup": { "DisplayValue": "Electronics" } }
+        },
+        "Offers": {
+          "Listings": [
+            {
+              "Id": "listing-b0goodtwo2-1",
+              "Price": { "Amount": 3299.0, "Currency": "INR" },
+              "SavingBasis": { "Amount": 4999.0, "Currency": "INR" },
+              "Availability": { "Type": "Now", "Message": "In Stock." }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

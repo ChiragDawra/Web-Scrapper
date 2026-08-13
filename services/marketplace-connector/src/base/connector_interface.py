@@ -23,9 +23,10 @@ not emit a partial/malformed `LISTING_DISCOVERED`" — raising is how an item sa
 
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
-from collections.abc import Iterable
-from typing import Any, ClassVar
+from collections.abc import Callable, Iterable, Iterator
+from typing import Any, ClassVar, Final
 
 from libs.canonical_models import CanonicalProduct
 from libs.enums import MarketplaceCode
@@ -48,7 +49,11 @@ __all__ = [
     "ListingNotFoundError",
     "ParseFailedError",
     "RateLimitedError",
+    "SkipListener",
+    "iter_products",
 ]
+
+logger: Final = logging.getLogger(__name__)
 
 
 class ConnectorError(Exception):
@@ -141,3 +146,50 @@ class ConnectorInterface(ABC):
         unusable. Returns a fully valid `CanonicalProduct` or raises; there is
         no third outcome.
         """
+
+
+#: Notified once per skipped item, with the raw item and the error that rejected
+#: it. A hook rather than a return value because `iter_products` is a generator
+#: whose caller is publishing as it goes — there is no "end of batch" moment at
+#: which a list of failures could still be acted on in time.
+SkipListener = Callable[[Any, ParseFailedError], None]
+
+
+def iter_products(
+    connector: ConnectorInterface, *, on_skip: SkipListener | None = None
+) -> Iterator[CanonicalProduct]:
+    """Yield every listing in one fetch batch that normalizes — Sprint 2 Task 2.5.
+
+    `SERVICE_INTERFACES.md` §1: "On `CONN_PARSE_FAILED`, logs and skips the item;
+    does not emit a partial/malformed `LISTING_DISCOVERED`." This is that
+    sentence. One malformed item costs its own listing and nothing else: the
+    batch keeps going, so a single bad record cannot stall ingestion for a whole
+    marketplace.
+
+    Only `ParseFailedError` is swallowed, and only around `normalize()`. It is
+    the one `CONN_*` code that is per-item and non-retryable — a malformed
+    listing does not become well-formed on the next poll, and no amount of
+    retrying fixes it. Everything else propagates: `CONN_RATE_LIMITED` and
+    `CONN_TIMEOUT` are conditions of the *fetch*, they apply to the whole batch,
+    and treating them as "skip one item" would quietly turn a throttled poll into
+    an empty one that looks like a marketplace with no listings.
+    """
+    for raw in connector.fetch_raw():
+        try:
+            product = connector.normalize(raw)
+        except ParseFailedError as exc:
+            # WARNING, not ERROR: an unparseable listing among thousands is
+            # normal marketplace noise. `ERROR_CODES.md` severity belongs in the
+            # message so a log search by code finds every drop.
+            logger.warning(
+                "%s: skipping %s item (severity=%s, retryable=%s): %s",
+                exc.code,
+                connector.marketplace,
+                exc.error.severity,
+                exc.retryable,
+                exc.detail or "no detail",
+            )
+            if on_skip is not None:
+                on_skip(raw, exc)
+            continue
+        yield product

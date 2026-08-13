@@ -9,22 +9,21 @@ not actually publish therefore fails here, not only in the integration test.
 
 from __future__ import annotations
 
-import json
 from dataclasses import replace
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 import pytest
 from redis import Redis
-from src.base.connector_interface import ParseFailedError
 from src.config import Config
 from src.connectors.amazon.connector import AmazonConnector
 from src.main import EVENT_TYPE, build_connector, listing_event, publish_batch
+from tests.recording_redis import RecordingRedis
 
 from libs.canonical_models import CanonicalProduct
 from libs.enums import EventProducerService, MarketplaceCode
 from libs.event_bus import Envelope, EventSchemaInvalidError
-from libs.event_bus.publisher import ENVELOPE_FIELD, EventPublisher
+from libs.event_bus.publisher import EventPublisher
 
 INVALID_FIXTURE_DIR = Path(__file__).resolve().parents[1] / "fixtures" / "amazon_invalid"
 
@@ -34,30 +33,6 @@ VALID_CONFIG = Config(
     poll_interval_seconds=300,
     log_level="INFO",
 )
-
-
-class RecordingRedis:
-    """Captures what would have been `XADD`ed, in order.
-
-    A stand-in rather than a mock: the assertions are about the events on the
-    stream, so the double records them and does nothing else.
-    """
-
-    def __init__(self) -> None:
-        self.entries: list[tuple[str, dict[str, str]]] = []
-
-    def xadd(
-        self,
-        name: str,
-        fields: dict[str, str],
-        maxlen: int | None = None,
-        approximate: bool = True,
-    ) -> bytes:
-        self.entries.append((name, fields))
-        return f"{len(self.entries)}-0".encode()
-
-    def envelopes(self) -> list[dict[str, Any]]:
-        return [json.loads(fields[ENVELOPE_FIELD]) for _, fields in self.entries]
 
 
 @pytest.fixture
@@ -74,9 +49,10 @@ def test_one_event_per_valid_fixture_reaches_the_bus(
     bus: RecordingRedis, publisher: EventPublisher
 ) -> None:
     """The Task 2.4 Definition of Done, stated directly."""
-    published = publish_batch(AmazonConnector(), publisher)
+    result = publish_batch(AmazonConnector(), publisher)
 
-    assert published == 5
+    assert result.published == 5
+    assert result.skipped == 0
     assert len(bus.entries) == 5
 
 
@@ -134,13 +110,12 @@ def test_a_malformed_fixture_produces_zero_events(
     bus: RecordingRedis, publisher: EventPublisher
 ) -> None:
     """Sprint 2 acceptance criteria: "a fixture missing a required field produces
-    zero events." Skipping it and carrying on is Task 2.5; refusing to emit it is
-    this task's half of that guarantee."""
-    connector = AmazonConnector(fixture_dir=INVALID_FIXTURE_DIR)
+    zero events." Counted as skipped rather than raised (Task 2.5), but the number
+    that matters is the same either way: nothing on the bus."""
+    result = publish_batch(AmazonConnector(fixture_dir=INVALID_FIXTURE_DIR), publisher)
 
-    with pytest.raises(ParseFailedError):
-        publish_batch(connector, publisher)
-
+    assert result.published == 0
+    assert result.skipped == 4
     assert bus.entries == []
 
 

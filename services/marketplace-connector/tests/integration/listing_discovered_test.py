@@ -57,10 +57,11 @@ def test_one_listing_discovered_per_valid_fixture_lands_on_the_stream(
     redis_client: Redis,
 ) -> None:
     """Task 2.4 Definition of Done, against a real Redis."""
-    published = publish_batch(AmazonConnector(), EventPublisher(redis_client))
+    result = publish_batch(AmazonConnector(), EventPublisher(redis_client))
     envelopes = _envelopes_on_stream(redis_client)
 
-    assert published == 5
+    assert result.published == 5
+    assert result.skipped == 0
     assert len(envelopes) == 5
     assert {
         CanonicalProduct.from_dict(envelope.payload["product"]).external_listing_id
