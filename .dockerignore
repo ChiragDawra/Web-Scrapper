@@ -1,0 +1,34 @@
+# Build context is the repo root (services/*/Dockerfile need libs/), so the
+# context includes everything by default — including twelve ZIP_* archive
+# directories and the local virtualenv. Excluding them here is the difference
+# between a context measured in kilobytes and one that ships the whole design
+# history to the daemon on every build. Sprint 2 Task 2.6.
+
+# Architecture archives and contracts: documentation, never imported at runtime.
+ZIP_*/
+*.zip
+
+.git/
+.github/
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets never belong in an image layer. .env.example stays out too — it is
+# documentation, and the values are placeholders.
+.env
+.env.*
+
+# Test code is not shipped — except the recorded fixtures the connector's fetch
+# stub actually reads at runtime (INPUTS_NEEDED.md item 1). Both patterns are
+# needed: the first is repo-root `tests/`, the second is each service's own.
+tests/
+services/*/tests/
+!services/*/tests/fixtures/
+
+admin-dashboard/node_modules/

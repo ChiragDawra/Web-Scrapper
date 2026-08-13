@@ -59,6 +59,32 @@ services:
       retries: 5
       start_period: 5s
 
+  # One connector deployable per marketplace (SERVICE_INTERFACES.md §1), named
+  # for the marketplace it reads — Sprint 2 Task 2.6. Flipkart, Myntra and Nykaa
+  # get their own services in Sprint 10.
+  marketplace-connector-amazon:
+    build:
+      # Repo root: the service imports libs/, which a context rooted at the
+      # service directory could not reach.
+      context: .
+      dockerfile: services/marketplace-connector/Dockerfile
+    container_name: businessscrapper-marketplace-connector-amazon
+    restart: unless-stopped
+    environment:
+      MARKETPLACE_CODE: AMAZON
+      # Service name, not 127.0.0.1: the loopback port mapping above is for host
+      # tooling, and inside the network this resolves to the container.
+      REDIS_URL: redis://redis:6379/0
+      MARKETPLACE_POLL_INTERVAL_SECONDS: ${MARKETPLACE_POLL_INTERVAL_SECONDS:-300}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      redis:
+        # Not just started: the first poll publishes immediately, and a refused
+        # connection at boot would crash the process before the loop begins.
+        condition: service_healthy
+    # No ports: it publishes to the bus and serves nothing.
+    # No postgres dependency: a connector owns no tables.
+
 volumes:
   pgdata:
   redisdata:

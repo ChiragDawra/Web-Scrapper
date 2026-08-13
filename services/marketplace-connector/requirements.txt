@@ -1,0 +1,19 @@
+# Marketplace Connector runtime dependencies — Sprint 2 Task 2.6.
+#
+# The per-service split requirements.txt at the repo root anticipated ("Per-service
+# dependency splits arrive in Sprint 2 with the first real service"). This is a
+# strict subset of the root file at identical pins: a service that resolves a
+# different redis than the library code it imports is the problem this repo pins
+# versions to avoid.
+#
+# Notably absent: SQLAlchemy, alembic and psycopg. A connector owns no tables
+# (SERVICE_INTERFACES.md §1) and never touches Postgres — it publishes to the bus
+# and stops there. Shipping a database driver it cannot use would only widen the
+# image and the dependency surface.
+
+# Event bus: Redis Streams (EVENT_SCHEMAS.md, ADR-006/ADR-010).
+redis==8.1.0
+
+# Envelope + LISTING_DISCOVERED payload validation, run before every publish.
+jsonschema==4.26.0
+referencing==0.37.0
