@@ -56,6 +56,23 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
+
+    # Sprint 2 Task 2.7: the integration tests skip themselves when Redis is
+    # unreachable, which kept them honest locally but meant CI proved only the
+    # unit suite. A real broker turns those skips into assertions — publishing a
+    # LISTING_DISCOVERED and reading it back through a consumer group is the one
+    # thing a stand-in cannot check.
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 3s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -68,22 +85,11 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
-      # tests/ holds only empty Task 0.1 placeholders, and pytest exits 5 —
-      # "no tests collected" — rather than 0 when it finds nothing. Treating 5 as
-      # success keeps this job honest on the empty repo while still failing on a
-      # real test failure. Sprint 1 adds the first tests; delete this branch once
-      # the suite is non-empty so an accidentally empty run is caught again.
+      # The Sprint 0 "treat exit 5 as success" branch is gone: that file's own
+      # comment said to delete it once the suite was non-empty, and it is — an
+      # accidentally empty run is a failure again, which is the point of it.
       - name: Run pytest
-        run: |
-          set +e
-          pytest tests -q
-          status=$?
-          set -e
-          if [ "$status" -eq 5 ]; then
-            echo "::notice::No tests collected yet (Sprint 0). Treating as pass."
-            exit 0
-          fi
-          exit "$status"
+        run: pytest tests -q
 
       # One pytest session per service, not one session over all of them: every
       # service owns a top-level `src` package, so a combined run would see
