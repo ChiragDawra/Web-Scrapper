@@ -52,3 +52,19 @@ repos:
         # no filenames makes every run cover the same configured tree.
         pass_filenames: false
         args: [--config-file=pyproject.toml]
+        # The hook runs in its own isolated environment, so without these it sees
+        # none of the runtime dependencies: `ignore_missing_imports` then turns
+        # every psycopg and redis call into `Any`, and the check silently weakens
+        # to "does this parse". It also disagreed with a local run — a
+        # `type: ignore` that a developer needs became an `unused-ignore` error in
+        # CI, which is how this was found. Pins match requirements.txt exactly;
+        # they have to, or the hook type-checks against a different library than
+        # the one that ships.
+        additional_dependencies:
+          - psycopg[binary]==3.3.4
+          - redis==8.1.0
+          - jsonschema==4.26.0
+          - referencing==0.37.0
+          - SQLAlchemy==2.0.51
+          - alembic==1.19.0
+          - pytest==9.1.1
