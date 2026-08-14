@@ -21,9 +21,9 @@ __all__ = ["CONSUMED_EVENT_TYPES", "PRODUCER_SERVICE", "Config"]
 # the service enum value, and the same string keys `processed_events`).
 PRODUCER_SERVICE: Final = EventProducerService.DEAL_ENGINE
 
-#: `SERVICE_INTERFACES.md` §2 "Handles". Task 3.5 wires `LISTING_DISCOVERED`;
-#: `USER_INTERESTED` is Task 3.6 and is listed here so both groups are created
-#: at startup rather than on first delivery.
+#: `SERVICE_INTERFACES.md` §2 "Handles". Both groups are created at startup
+#: rather than on first delivery, so a tap arriving before the first listing
+#: still finds a group to be read by.
 CONSUMED_EVENT_TYPES: Final[tuple[str, ...]] = ("LISTING_DISCOVERED", "USER_INTERESTED")
 
 

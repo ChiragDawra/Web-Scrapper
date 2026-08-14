@@ -53,7 +53,11 @@ def sql_text(module_path: Path) -> str:
             if isinstance(literal, ast.Constant) and isinstance(literal.value, str):
                 parts.append(literal.value)
 
-    return "\n".join(parts)
+    # Joined with a statement terminator, not a newline: an f-string's parts
+    # arrive as separate constants, so a fragment ending in `FOR UPDATE` would
+    # otherwise sit directly above the next constant's `INSERT INTO ...` and
+    # read as an update of a table called "insert".
+    return ";\n".join(parts)
 
 
 def test_every_owned_table_has_a_repository() -> None:

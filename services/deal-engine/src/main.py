@@ -1,7 +1,7 @@
-"""Deal Engine entry point — Sprint 3 Task 3.5.
+"""Deal Engine entry point — Sprint 3 Tasks 3.5 and 3.6.
 
-Consumes `LISTING_DISCOVERED`, emits `DEAL_SCORED` (`SERVICE_INTERFACES.md` §2).
-`USER_INTERESTED` joins the same loop in Task 3.6.
+Consumes `LISTING_DISCOVERED` and `USER_INTERESTED`, emits `DEAL_SCORED`
+(`SERVICE_INTERFACES.md` §2).
 
 One event is one transaction and one dedup mark. `process_once` writes the
 `processed_events` row inside that same transaction as the deal it produced
@@ -27,7 +27,12 @@ from libs.event_bus.consumer import EventConsumer, ReceivedEvent
 from libs.event_bus.dedup import process_once
 from libs.event_bus.publisher import EventPublisher
 from src.config import CONSUMED_EVENT_TYPES, PRODUCER_SERVICE, Config
-from src.handlers.event_handlers import LISTING_DISCOVERED, handle_listing_discovered
+from src.handlers.event_handlers import (
+    LISTING_DISCOVERED,
+    USER_INTERESTED,
+    handle_listing_discovered,
+    handle_user_interested,
+)
 from src.services.scorer import ScoringConfig, load_scoring_config
 
 __all__ = ["HANDLERS", "handle_event", "main", "run"]
@@ -41,6 +46,9 @@ type Handler = Callable[[Connection, EventPublisher, ReceivedEvent, ScoringConfi
 
 HANDLERS: Final[Mapping[str, Handler]] = {
     LISTING_DISCOVERED: lambda conn, publisher, event, config: handle_listing_discovered(
+        conn, publisher, event, scoring_config=config
+    ),
+    USER_INTERESTED: lambda conn, publisher, event, config: handle_user_interested(
         conn, publisher, event, scoring_config=config
     ),
 }

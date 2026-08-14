@@ -1,4 +1,4 @@
-"""Event handlers — Sprint 3 Task 3.5.
+"""Event handlers — Sprint 3 Tasks 3.5 and 3.6.
 
 `LISTING_DISCOVERED` in, `DEAL_SCORED` out (`EVENT_SCHEMAS.md` §2). One handled
 event is one transaction: ingest the observation, score it, and — only if it
@@ -15,13 +15,21 @@ The `marketplace` on the outgoing event is joined here from `listings` and
 `marketplaces` — both Deal-Engine-owned — and then carried opaquely by every
 downstream consumer, so nobody re-derives it with a cross-service read
 (ADR-009, `CANONICAL_MODELS.md` §ScoredDeal).
+
+`USER_INTERESTED` (Task 3.6) is the one write that moves an existing deal's
+status. The legal edge is `DEAL_SENT -> INTERESTED` and nothing else
+(`STATE_TRANSITIONS.md` §1); everything that is not that edge — an expired
+deal, a terminal deal, a second tap — is rejected as a no-op rather than
+raising, because none of them become legal on redelivery.
 """
 
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from decimal import Decimal
+from enum import StrEnum
 from typing import Any, Final
 from uuid import UUID
 
@@ -29,7 +37,7 @@ from psycopg import Connection
 
 from libs.canonical_models import CanonicalProduct
 from libs.canonical_models.scored_deal import ScoredDeal
-from libs.enums import MarketplaceCode
+from libs.enums import DealStatus, MarketplaceCode
 from libs.event_bus import Envelope
 from libs.event_bus.consumer import ReceivedEvent
 from libs.event_bus.publisher import EventPublisher
@@ -47,15 +55,26 @@ from src.services.scorer import DEFAULT_CONFIG, ScoringConfig, score
 __all__ = [
     "DEAL_SCORED",
     "LISTING_DISCOVERED",
+    "USER_INTERESTED",
+    "HandledInterest",
     "HandledListing",
+    "InterestRejection",
     "deal_scored_event",
     "handle_listing_discovered",
+    "handle_user_interested",
 ]
 
 logger: Final = logging.getLogger(__name__)
 
 LISTING_DISCOVERED: Final = "LISTING_DISCOVERED"
 DEAL_SCORED: Final = "DEAL_SCORED"
+USER_INTERESTED: Final = "USER_INTERESTED"
+
+#: The only status a tap may be applied from (`STATE_TRANSITIONS.md` §1).
+#: `WATCHING` is not here: a watched deal is re-notified back to `DEAL_SENT`
+#: first, and that re-notification is the notification worker's edge, not this
+#: handler's to shortcut.
+INTEREST_SOURCE_STATUS: Final = DealStatus.DEAL_SENT
 
 
 @dataclass(frozen=True, slots=True)
@@ -121,6 +140,99 @@ def handle_listing_discovered(
     return HandledListing(
         listing_id=listing.id, scored=scored, deal_id=result.deal.id, published=True
     )
+
+
+class InterestRejection(StrEnum):
+    """Why a tap was not applied. Every value is a normal outcome, not an error."""
+
+    NO_SUCH_DEAL = "NO_SUCH_DEAL"
+    EXPIRED = "EXPIRED"
+    ALREADY_INTERESTED = "ALREADY_INTERESTED"
+    WRONG_STATUS = "WRONG_STATUS"
+
+
+@dataclass(frozen=True, slots=True)
+class HandledInterest:
+    """What one `USER_INTERESTED` did.
+
+    `applied` and `rejection` are exclusive: an applied tap has no rejection,
+    and a rejected one names its reason so the log says which guard fired.
+    """
+
+    deal_id: UUID
+    applied: bool
+    status: DealStatus | None
+    rejection: InterestRejection | None
+
+
+def handle_user_interested(
+    conn: Connection,
+    publisher: EventPublisher,
+    event: ReceivedEvent,
+    *,
+    scoring_config: ScoringConfig = DEFAULT_CONFIG,
+) -> HandledInterest:
+    """Apply `DEAL_SENT -> INTERESTED`, or reject the tap.
+
+    `publisher` and `scoring_config` are unused and kept anyway: every handler
+    in `main.HANDLERS` is called through one signature, and a special case
+    there would be worse than two ignored arguments here. Nothing is rescored
+    on this edge — `STATE_TRANSITIONS.md` §1, "No in-place rescoring".
+
+    The Bot enforces the tap-after-expiry guard at the callback
+    (`STATE_TRANSITIONS.md` §1) and so should not emit for an expired deal,
+    but the guard is re-checked here: the Bot's view of `expires_at` is
+    whatever it rendered into the message, and this handler owns the table.
+
+    No event is published on this edge. The Bot emits
+    `DEAL_REVALIDATION_REQUEST` itself once its callback succeeds — the Deal
+    Engine publishing it too would start two revalidation rounds per tap.
+    """
+    deal_id = UUID(str(event.envelope.payload["deal_id"]))
+    repo = DealRepository(conn)
+
+    deal = repo.get_by_id(deal_id, for_update=True)
+    if deal is None:
+        return _rejected(deal_id, None, InterestRejection.NO_SUCH_DEAL)
+
+    if deal.status is DealStatus.EXPIRED:
+        return _rejected(deal_id, deal.status, InterestRejection.EXPIRED)
+
+    if deal.expires_at <= datetime.now(UTC):
+        # Lazily applies the §1 edge "expires_at reached, no action -> EXPIRED".
+        # Nothing sweeps deals to EXPIRED yet (that worker is Sprint 6), so a
+        # tap that arrives late would otherwise pass the status guard on a deal
+        # whose price is no longer being honored.
+        repo.update_status(deal_id, DealStatus.EXPIRED)
+        logger.info("deal %s expired at %s; tap rejected", deal_id, deal.expires_at)
+        return _rejected(deal_id, DealStatus.EXPIRED, InterestRejection.EXPIRED)
+
+    if deal.status is DealStatus.INTERESTED:
+        # A double tap, or the same tap redelivered past its dedup mark. The
+        # deal is already where the user wants it, so this is idempotent.
+        return _rejected(deal_id, deal.status, InterestRejection.ALREADY_INTERESTED)
+
+    if deal.status is not INTEREST_SOURCE_STATUS:
+        logger.info(
+            "deal %s is %s, not %s; tap rejected", deal_id, deal.status, INTEREST_SOURCE_STATUS
+        )
+        return _rejected(deal_id, deal.status, InterestRejection.WRONG_STATUS)
+
+    updated = repo.update_status(deal_id, DealStatus.INTERESTED)
+    if updated is None:
+        # Read under `FOR UPDATE` and gone by the update: the row was deleted
+        # inside this transaction's own snapshot, which no code path does.
+        raise RuntimeError(f"deal {deal_id} vanished between lock and update")
+
+    logger.info("deal %s moved to %s", deal_id, updated.status)
+    return HandledInterest(deal_id=deal_id, applied=True, status=updated.status, rejection=None)
+
+
+def _rejected(
+    deal_id: UUID, status: DealStatus | None, rejection: InterestRejection
+) -> HandledInterest:
+    logger.debug("tap on deal %s rejected: %s", deal_id, rejection)
+    return HandledInterest(deal_id=deal_id, applied=False, status=status, rejection=rejection)
 
 
 def deal_scored_event(

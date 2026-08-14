@@ -107,6 +107,11 @@ LIMIT 1
 
 _SELECT_BY_ID: Final = f"SELECT {_COLUMNS} FROM deals WHERE id = %s"
 
+# The row lock a status transition takes: two taps on the same message arriving
+# at two workers must not both read `DEAL_SENT` and both write. Unlike deal
+# creation this one can be a row lock, because the row exists by definition.
+_SELECT_BY_ID_FOR_UPDATE: Final = f"{_SELECT_BY_ID} FOR UPDATE"
+
 _INSERT: Final = f"""
 INSERT INTO deals (
   listing_id, status, score, score_breakdown,
@@ -164,9 +169,15 @@ class DealRepository:
             row = cur.fetchone()
         return Deal.from_row(row) if row else None
 
-    def get_by_id(self, deal_id: UUID) -> Deal | None:
+    def get_by_id(self, deal_id: UUID, *, for_update: bool = False) -> Deal | None:
+        """One deal by id, optionally locked for the rest of the transaction.
+
+        `for_update=True` is for read-decide-write sequences — a status
+        transition reads the current status and then writes based on it, and
+        without the lock two concurrent taps can both pass the same guard.
+        """
         with self._conn.cursor() as cur:
-            cur.execute(_SELECT_BY_ID, (deal_id,))
+            cur.execute(_SELECT_BY_ID_FOR_UPDATE if for_update else _SELECT_BY_ID, (deal_id,))
             row = cur.fetchone()
         return Deal.from_row(row) if row else None
 
