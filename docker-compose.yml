@@ -85,6 +85,38 @@ services:
     # No ports: it publishes to the bus and serves nothing.
     # No postgres dependency: a connector owns no tables.
 
+  # Deal Engine — Sprint 3 Task 3.7. Consumes LISTING_DISCOVERED and
+  # USER_INTERESTED, emits DEAL_SCORED (SERVICE_INTERFACES.md §2).
+  deal-engine:
+    build:
+      context: .
+      dockerfile: services/deal-engine/Dockerfile
+    container_name: businessscrapper-deal-engine
+    restart: unless-stopped
+    environment:
+      # Service names, not 127.0.0.1: the loopback port mappings above are for
+      # host tooling, and inside the network these resolve to the containers.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-businessscrapper}:${POSTGRES_PASSWORD:-businessscrapper}@postgres:5432/${POSTGRES_DB:-businessscrapper}
+      REDIS_URL: redis://redis:6379/0
+      # Identifies this worker inside the consumer group; the container ID is
+      # stable for the life of the container and unique across replicas.
+      CONSUMER_NAME: ${HOSTNAME:-deal-engine}
+      # Unset until the API Gateway serves /scoring-config (Sprint 13 Task
+      # 13.7). The scorer falls back to its built-in weights and stamps
+      # `builtin-v1` into every score_breakdown it writes, so a score computed
+      # now stays interpretable after the endpoint exists.
+      SCORING_CONFIG_URL: ${SCORING_CONFIG_URL:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        # This service owns six tables and writes on the first event it reads.
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # No ports: it consumes from the bus and serves nothing.
+    # Schema migrations are not run here — `alembic upgrade head` from
+    # infra/postgres is an operator step, not a race between app containers.
+
 volumes:
   pgdata:
   redisdata:

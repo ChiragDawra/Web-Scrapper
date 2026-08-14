@@ -1,0 +1,22 @@
+# Deal Engine runtime dependencies — Sprint 3 Task 3.7.
+#
+# A strict subset of the root requirements.txt at identical pins, for the reason
+# that file gives: a service resolving a different redis than the library code it
+# imports is what pinning exists to prevent.
+#
+# Present and absent for the same reason — this service owns six tables
+# (SERVICE_INTERFACES.md §2), so unlike a connector it needs a driver.
+#
+# Notably absent: SQLAlchemy and alembic. Migrations are applied from
+# infra/postgres by an operator or CI, never by an application container racing
+# ten others to run them at boot.
+
+# Postgres driver. psycopg v3, as in infra/postgres/migrations/env.py.
+psycopg[binary]==3.3.4
+
+# Event bus: Redis Streams (EVENT_SCHEMAS.md, ADR-006/ADR-010).
+redis==8.1.0
+
+# Envelope + payload validation, run on every event read and every publish.
+jsonschema==4.26.0
+referencing==0.37.0

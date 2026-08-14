@@ -36,10 +36,20 @@ def _redis_url() -> str:
     return f"redis://{host}:{port}/0"
 
 
+#: The dialect prefix SQLAlchemy needs and libpq rejects. The repo documents
+#: `DATABASE_URL` in SQLAlchemy form (`.env.example`, and Alembic reads the same
+#: variable), so one value has to serve both; stripping it here is cheaper than
+#: asking every deployment to carry two spellings of one database.
+_SQLALCHEMY_PREFIX: Final = "postgresql+psycopg://"
+_LIBPQ_PREFIX: Final = "postgresql://"
+
+
 def _database_url() -> str:
     url = os.environ.get("DATABASE_URL", "").strip()
     if not url:
         raise ValueError("DATABASE_URL is required")
+    if url.startswith(_SQLALCHEMY_PREFIX):
+        return _LIBPQ_PREFIX + url[len(_SQLALCHEMY_PREFIX) :]
     return url
 
 
