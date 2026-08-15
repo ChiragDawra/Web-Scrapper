@@ -1,0 +1,58 @@
+{
+  "products": [
+    {
+      "productBaseInfoV1": {
+        "productId": "FLPCOMPLETE1",
+        "title": "  Sony WH-1000XM5 Wireless Noise Cancelling Headphones  ",
+        "productDescription": "Industry leading noise cancellation.",
+        "productBrand": "Sony",
+        "productUrl": "https://www.flipkart.com/p/FLPCOMPLETE1",
+        "categoryPath": "Electronics>Audio>Over-Ear Headphones",
+        "imageUrls": {
+          "200x200": "https://rukminim1.flixcart.com/image/200/200/FLPCOMPLETE1.jpeg",
+          "400x400": "https://rukminim1.flixcart.com/image/400/400/FLPCOMPLETE1.jpeg",
+          "800x800": "https://rukminim1.flixcart.com/image/800/800/FLPCOMPLETE1.jpeg"
+        },
+        "color": "Midnight Black",
+        "maximumRetailPrice": { "amount": 34990.0, "currency": "INR" },
+        "flipkartSellingPrice": { "amount": 27990.0, "currency": "INR" },
+        "flipkartSpecialPrice": { "amount": 24999.0, "currency": "INR" },
+        "inStock": true,
+        "codAvailable": true,
+        "discountPercentage": 28,
+        "productRating": { "average": 4.3, "count": 1520 }
+      },
+      "productShippingInfoV1": {
+        "sellerName": "SuperComNet",
+        "shippingCharges": { "amount": 0.0, "currency": "INR" }
+      }
+    },
+    {
+      "productBaseInfoV1": {
+        "productId": "FLPNOMRP002",
+        "title": "boAt Airdopes 141 True Wireless Earbuds",
+        "productBrand": "boAt",
+        "productUrl": "https://www.flipkart.com/p/FLPNOMRP002",
+        "categoryPath": "Electronics",
+        "imageUrls": {
+          "200x200": "https://rukminim1.flixcart.com/image/200/200/FLPNOMRP002.jpeg"
+        },
+        "flipkartSellingPrice": { "amount": 899.99, "currency": "INR" },
+        "inStock": true
+      }
+    },
+    {
+      "productBaseInfoV1": {
+        "productId": "FLPNOSTOCK3",
+        "title": "Levi's 511 Slim Fit Jeans",
+        "productBrand": "Levi's",
+        "productUrl": "https://www.flipkart.com/p/FLPNOSTOCK3",
+        "categoryPath": "Clothing and Accessories>Men's Clothing>Jeans",
+        "size": "34W x 32L",
+        "color": "Indigo",
+        "maximumRetailPrice": { "amount": 3999.0, "currency": "INR" },
+        "flipkartSellingPrice": { "amount": 2199.0, "currency": "INR" }
+      }
+    }
+  ]
+}

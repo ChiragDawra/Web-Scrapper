@@ -1,0 +1,9 @@
+{
+  "productBaseInfoV1": {
+    "productId": "FLPUSHOST04",
+    "title": "Kindle Paperwhite 11th Generation",
+    "productUrl": "https://flipkart.example.com/p/FLPUSHOST04",
+    "flipkartSellingPrice": { "amount": 13999.0, "currency": "INR" },
+    "inStock": true
+  }
+}

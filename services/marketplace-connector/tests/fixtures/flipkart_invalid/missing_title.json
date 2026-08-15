@@ -1,0 +1,9 @@
+{
+  "productBaseInfoV1": {
+    "productId": "FLPNOTITLE1",
+    "productBrand": "Sony",
+    "productUrl": "https://www.flipkart.com/p/FLPNOTITLE1",
+    "flipkartSellingPrice": { "amount": 1499.0, "currency": "INR" },
+    "inStock": true
+  }
+}

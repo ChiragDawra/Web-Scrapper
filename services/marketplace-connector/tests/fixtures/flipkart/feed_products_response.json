@@ -1,0 +1,37 @@
+{
+  "productInfoList": [
+    {
+      "productBaseInfoV1": {
+        "productId": "FLPMESSAGE4",
+        "title": "Prestige Induction Cooktop PIC 20",
+        "productBrand": "Prestige",
+        "productUrl": "https://www.flipkart.com/p/FLPMESSAGE4",
+        "categoryPath": "Home and Kitchen>Kitchen Appliances>Induction Cooktops",
+        "imageUrls": {
+          "400x400": "https://rukminim1.flixcart.com/image/400/400/FLPMESSAGE4.jpeg"
+        },
+        "maximumRetailPrice": { "amount": 2495.0, "currency": "INR" },
+        "flipkartSellingPrice": { "amount": 1049.5, "currency": "INR" },
+        "availability": "Only 2 left in stock",
+        "productRating": { "average": 4.1, "count": 8834 }
+      },
+      "productShippingInfoV1": {
+        "sellerName": "RetailNet"
+      }
+    },
+    {
+      "productBaseInfoV1": {
+        "productId": "FLPSOLDOUT5",
+        "title": "Nike Revolution 6 Running Shoes",
+        "productBrand": "Nike",
+        "productUrl": "https://www.flipkart.com/p/FLPSOLDOUT5",
+        "categoryPath": "Footwear>Men's Footwear>Sports Shoes",
+        "size": "UK 9",
+        "maximumRetailPrice": { "amount": 3495.0, "currency": "INR" },
+        "flipkartSellingPrice": { "amount": 2796.0, "currency": "INR" },
+        "inStock": false,
+        "availability": "Out of stock"
+      }
+    }
+  ]
+}

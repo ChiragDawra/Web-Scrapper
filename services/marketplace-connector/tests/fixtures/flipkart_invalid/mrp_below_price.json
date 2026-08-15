@@ -1,0 +1,10 @@
+{
+  "productBaseInfoV1": {
+    "productId": "FLPBADMRP03",
+    "title": "Philips Air Fryer HD9200",
+    "productUrl": "https://www.flipkart.com/p/FLPBADMRP03",
+    "maximumRetailPrice": { "amount": 4999.0, "currency": "INR" },
+    "flipkartSellingPrice": { "amount": 6999.0, "currency": "INR" },
+    "inStock": true
+  }
+}
