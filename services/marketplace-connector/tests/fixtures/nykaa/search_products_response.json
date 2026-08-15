@@ -1,0 +1,37 @@
+{
+  "products": [
+    {
+      "sku": "NYK-SKU-1004",
+      "name": "Nykaa Cosmetics Matte To Last Liquid Lipstick",
+      "brand_name": "Nykaa Cosmetics",
+      "product_url": "https://www.nykaa.com/nykaa-matte-to-last-liquid-lipstick/p/8804",
+      "image_url": "https://images-static.nykaa.com/media/catalog/product/8804.jpg",
+      "primary_categories": {
+        "l1": { "name": "Makeup" },
+        "l2": { "name": "Lips" },
+        "l3": { "name": "Liquid Lipstick" }
+      },
+      "shade_name": "Rani 05",
+      "final_price": "549",
+      "mrp": "799",
+      "quantity": 0,
+      "stock_status": "In stock",
+      "rating": 4.3,
+      "rating_count": 2891
+    },
+    {
+      "product_id": 8805,
+      "title": "Dot & Key Vitamin C Sunscreen SPF 50",
+      "brand": { "name": "Dot & Key" },
+      "url": "https://www.nykaa.com/dot-and-key-vitamin-c-sunscreen/p/8805",
+      "image_url": "https://images-static.nykaa.com/media/catalog/product/8805.jpg",
+      "primary_categories": {
+        "l1": { "name": "Skin" },
+        "l2": { "name": "Sunscreen" }
+      },
+      "size": "50 g",
+      "price": "349",
+      "stock_status": "Low Stock"
+    }
+  ]
+}

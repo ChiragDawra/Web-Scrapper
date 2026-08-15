@@ -1,0 +1,59 @@
+{
+  "response": {
+    "total": 3,
+    "products": [
+      {
+        "sku": "NYK-SKU-1001",
+        "id": 8801,
+        "name": "  Lakme Absolute Skin Dew Satin Foundation  ",
+        "brand_name": "Lakme",
+        "product_url": "https://www.nykaa.com/lakme-absolute-skin-dew-satin-foundation/p/8801",
+        "image_url": "https://images-static.nykaa.com/media/catalog/product/8801.jpg",
+        "primary_categories": {
+          "l1": { "name": "Makeup" },
+          "l2": { "name": "Face" },
+          "l3": { "name": "Foundation" }
+        },
+        "shade_name": "Ivory Fair 01",
+        "pack_size": "30 ml",
+        "variant_name": "Satin Matte",
+        "final_price": "₹1,299",
+        "price": "1,499",
+        "mrp": "1,999",
+        "quantity": 12,
+        "rating": 4.5,
+        "rating_count": "1,204"
+      },
+      {
+        "sku": "NYK-SKU-1002",
+        "name": "Maybelline New York Colossal Kajal",
+        "brand": { "name": "Maybelline New York" },
+        "url": "https://www.nykaa.com/maybelline-colossal-kajal/p/8802",
+        "images": [{ "url": "https://images-static.nykaa.com/media/catalog/product/8802.jpg" }],
+        "primary_categories": {
+          "l1": { "name": "Makeup" },
+          "l2": { "name": "Eyes" }
+        },
+        "final_price": 899.99,
+        "in_stock": true
+      },
+      {
+        "sku": "NYK-SKU-1003",
+        "name": "The Ordinary Niacinamide 10% + Zinc 1%",
+        "brand_name": "The Ordinary",
+        "product_url": "https://www.nykaa.com/the-ordinary-niacinamide/p/8803",
+        "image_url": "https://images-static.nykaa.com/media/catalog/product/8803.jpg",
+        "primary_categories": {
+          "l1": { "name": "Skin" },
+          "l2": { "name": "Serums" },
+          "l3": { "name": "Face Serums" }
+        },
+        "pack_size": "30 ml",
+        "final_price": "2199.00",
+        "mrp": 3999,
+        "rating": 4.1,
+        "review_count": 486
+      }
+    ]
+  }
+}
