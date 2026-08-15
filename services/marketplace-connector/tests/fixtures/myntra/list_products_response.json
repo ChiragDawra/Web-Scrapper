@@ -1,0 +1,32 @@
+{
+  "products": [
+    {
+      "productId": 4477003,
+      "product": "Roadster Men Navy Blue Checked Casual Shirt",
+      "brand": "Roadster",
+      "landingPageUrl": "roadster-men-navy-checked-casual-shirt/4477003/buy",
+      "searchImage": "https://assets.myntassets.com/h_720/4477003/image.jpg",
+      "category": "Topwear",
+      "articleType": "Shirts",
+      "primaryColour": "Navy Blue",
+      "sizes": "38,40,42",
+      "discountedPrice": 899.99,
+      "rating": 3.9,
+      "ratingCount": 512,
+      "inventoryInfo": [{ "skuId": 74001, "label": "40", "available": true }]
+    },
+    {
+      "productId": "5566004",
+      "product": "Maybelline New York Superstay Matte Ink Liquid Lipstick",
+      "brand": "Maybelline",
+      "landingPageUrl": "/maybelline-superstay-matte-ink/5566004/buy",
+      "searchImage": "https://assets.myntassets.com/h_720/5566004/image.jpg",
+      "category": "Beauty",
+      "articleType": "Lipstick",
+      "primaryColour": "Pioneer",
+      "price": 799,
+      "discountedPrice": 559,
+      "outOfStock": false
+    }
+  ]
+}

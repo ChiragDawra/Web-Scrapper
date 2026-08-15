@@ -1,0 +1,60 @@
+{
+  "data": {
+    "totalCount": 3,
+    "products": [
+      {
+        "productId": 1466678,
+        "product": "  Puma Men Black Solid Round Neck T-shirt  ",
+        "brand": "Puma",
+        "landingPageUrl": "puma-men-black-solid-round-neck-t-shirt/1466678/buy",
+        "searchImage": "https://assets.myntassets.com/h_720/1466678/image.jpg",
+        "category": "Topwear",
+        "articleType": "Tshirts",
+        "primaryColour": "Black",
+        "sizes": "S,M,L,XL",
+        "price": 1299,
+        "mrp": 1499,
+        "discountedPrice": 649,
+        "rating": 4.2,
+        "ratingCount": 3184,
+        "inventoryInfo": [
+          { "skuId": 41111, "label": "S", "available": false, "inventory": 0 },
+          { "skuId": 41112, "label": "M", "available": true, "inventory": 7 },
+          { "skuId": 41113, "label": "L", "available": true, "inventory": 2 }
+        ]
+      },
+      {
+        "productId": 2299001,
+        "productName": "Levis 511 Slim Fit Mid-Rise Jeans",
+        "brand": "Levis",
+        "landingPageUrl": "levis-511-slim-fit-jeans/2299001/buy",
+        "images": [{ "src": "https://assets.myntassets.com/h_720/2299001/image.jpg" }],
+        "category": "Bottomwear",
+        "articleType": "Jeans",
+        "primaryColour": "Indigo",
+        "sizes": "32,34,36",
+        "price": 3999,
+        "discountedPrice": 2199.5,
+        "inventoryInfo": [
+          { "skuId": 52001, "label": "32", "available": true, "inventory": 4 }
+        ]
+      },
+      {
+        "productId": 3388002,
+        "product": "Nike Revolution 6 Running Shoes",
+        "brand": "Nike",
+        "landingPageUrl": "nike-revolution-6-running-shoes/3388002/buy",
+        "searchImage": "https://assets.myntassets.com/h_720/3388002/image.jpg",
+        "category": "Footwear",
+        "articleType": "Sports Shoes",
+        "primaryColour": "White",
+        "sizes": "UK 8,UK 9",
+        "price": 3495,
+        "inventoryInfo": [
+          { "skuId": 63001, "label": "UK 8", "available": true, "inventory": 0 },
+          { "skuId": 63002, "label": "UK 9", "available": false, "inventory": 0 }
+        ]
+      }
+    ]
+  }
+}
