@@ -37,6 +37,9 @@ from src.base.connector_interface import (
 )
 from src.config import PRODUCER_SERVICE, Config
 from src.connectors.amazon.connector import AmazonConnector
+from src.connectors.flipkart.connector import FlipkartConnector
+from src.connectors.myntra.connector import MyntraConnector
+from src.connectors.nykaa.connector import NykaaConnector
 
 __all__ = [
     "CONNECTORS",
@@ -60,11 +63,20 @@ EVENT_TYPE: Final = "LISTING_DISCOVERED"
 #: `fetch_raw`/`normalize` and deliberately not `__init__` — what a connector
 #: needs to be constructed with is its own business.
 #:
-#: Flipkart, Myntra and Nykaa arrive in Sprint 10; until then their key is absent
-#: rather than mapped to a placeholder, so a misconfigured deployable fails at
-#: startup instead of running as a connector that emits nothing.
+#: All four marketplaces as of Sprint 4 (Tasks 4.1.2, 4.2.2, 4.3.2). A code with
+#: no entry stays absent rather than mapped to a placeholder, so a misconfigured
+#: deployable fails at startup instead of running as a connector that emits
+#: nothing.
+#:
+#: `config.fixture_dir` is `None` unless `MARKETPLACE_FIXTURE_DIR` is set, and
+#: each connector then falls back to its own recorded directory — one env var
+#: for four deployables, and no deployable reading another marketplace's
+#: recordings by default.
 CONNECTORS: Final[Mapping[MarketplaceCode, Callable[[Config], ConnectorInterface]]] = {
     MarketplaceCode.AMAZON: lambda config: AmazonConnector(fixture_dir=config.fixture_dir),
+    MarketplaceCode.FLIPKART: lambda config: FlipkartConnector(fixture_dir=config.fixture_dir),
+    MarketplaceCode.MYNTRA: lambda config: MyntraConnector(fixture_dir=config.fixture_dir),
+    MarketplaceCode.NYKAA: lambda config: NykaaConnector(fixture_dir=config.fixture_dir),
 }
 
 

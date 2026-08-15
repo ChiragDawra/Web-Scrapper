@@ -15,8 +15,13 @@ from typing import cast
 
 import pytest
 from redis import Redis
+from src import main
+from src.base.connector_interface import ConnectorInterface
 from src.config import Config
 from src.connectors.amazon.connector import AmazonConnector
+from src.connectors.flipkart.connector import FlipkartConnector
+from src.connectors.myntra.connector import MyntraConnector
+from src.connectors.nykaa.connector import NykaaConnector
 from src.main import EVENT_TYPE, build_connector, listing_event, publish_batch
 from tests.recording_redis import RecordingRedis
 
@@ -151,8 +156,42 @@ def test_build_connector_passes_the_configured_fixture_directory() -> None:
     assert connector.fixture_dir == INVALID_FIXTURE_DIR
 
 
-def test_an_unimplemented_marketplace_fails_at_startup() -> None:
-    """Sprint 10 builds the other three. Until then a deployable configured for
-    one must not start and publish nothing."""
+@pytest.mark.parametrize(
+    ("marketplace", "connector_type"),
+    [
+        (MarketplaceCode.AMAZON, AmazonConnector),
+        (MarketplaceCode.FLIPKART, FlipkartConnector),
+        (MarketplaceCode.MYNTRA, MyntraConnector),
+        (MarketplaceCode.NYKAA, NykaaConnector),
+    ],
+)
+def test_every_marketplace_code_builds_its_own_connector(
+    marketplace: MarketplaceCode, connector_type: type[ConnectorInterface]
+) -> None:
+    """Sprint 4 completes the set. One deployable per marketplace, and the code it
+    is configured with is the one it reads — a container named for Flipkart that
+    built the Amazon connector would publish Amazon listings under a Flipkart
+    service name."""
+    connector = build_connector(replace(VALID_CONFIG, marketplace=marketplace))
+
+    assert isinstance(connector, connector_type)
+    assert connector.marketplace is marketplace
+
+
+def test_no_marketplace_code_is_left_without_a_connector() -> None:
+    """A new `marketplace_code` with no entry here is a deployable that starts and
+    publishes nothing, which looks exactly like a quiet marketplace."""
+    for marketplace in MarketplaceCode:
+        assert marketplace in main.CONNECTORS
+
+
+def test_an_unimplemented_marketplace_fails_at_startup(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Every code is mapped today, so this pins the behaviour rather than the gap:
+    a deployable configured for a marketplace with no connector must fail at
+    startup instead of running and emitting nothing."""
+    monkeypatch.setattr(main, "CONNECTORS", {})
+
     with pytest.raises(ValueError, match="no connector implemented"):
         build_connector(replace(VALID_CONFIG, marketplace=MarketplaceCode.FLIPKART))

@@ -60,8 +60,15 @@ services:
       start_period: 5s
 
   # One connector deployable per marketplace (SERVICE_INTERFACES.md §1), named
-  # for the marketplace it reads — Sprint 2 Task 2.6. Flipkart, Myntra and Nykaa
-  # get their own services in Sprint 10.
+  # for the marketplace it reads — Sprint 2 Task 2.6, extended to the remaining
+  # three marketplaces by Sprint 4 Tasks 4.1.2, 4.2.2 and 4.3.2.
+  #
+  # Four services off one image, differing only in MARKETPLACE_CODE: the
+  # connector for that code is selected at startup (src/main.py CONNECTORS), and
+  # a code with no connector fails there rather than running as a process that
+  # emits nothing. Separate services rather than replicas because each
+  # marketplace gets its own poll interval, its own restart blast radius and its
+  # own rate-limit budget.
   marketplace-connector-amazon:
     build:
       # Repo root: the service imports libs/, which a context rooted at the
@@ -84,6 +91,53 @@ services:
         condition: service_healthy
     # No ports: it publishes to the bus and serves nothing.
     # No postgres dependency: a connector owns no tables.
+
+  marketplace-connector-flipkart:
+    build:
+      context: .
+      dockerfile: services/marketplace-connector/Dockerfile
+    container_name: businessscrapper-marketplace-connector-flipkart
+    restart: unless-stopped
+    environment:
+      MARKETPLACE_CODE: FLIPKART
+      REDIS_URL: redis://redis:6379/0
+      # Per marketplace, falling back to the shared default: rate limits are set
+      # by whoever is being polled, not by this stack.
+      MARKETPLACE_POLL_INTERVAL_SECONDS: ${FLIPKART_POLL_INTERVAL_SECONDS:-${MARKETPLACE_POLL_INTERVAL_SECONDS:-300}}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  marketplace-connector-myntra:
+    build:
+      context: .
+      dockerfile: services/marketplace-connector/Dockerfile
+    container_name: businessscrapper-marketplace-connector-myntra
+    restart: unless-stopped
+    environment:
+      MARKETPLACE_CODE: MYNTRA
+      REDIS_URL: redis://redis:6379/0
+      MARKETPLACE_POLL_INTERVAL_SECONDS: ${MYNTRA_POLL_INTERVAL_SECONDS:-${MARKETPLACE_POLL_INTERVAL_SECONDS:-300}}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  marketplace-connector-nykaa:
+    build:
+      context: .
+      dockerfile: services/marketplace-connector/Dockerfile
+    container_name: businessscrapper-marketplace-connector-nykaa
+    restart: unless-stopped
+    environment:
+      MARKETPLACE_CODE: NYKAA
+      REDIS_URL: redis://redis:6379/0
+      MARKETPLACE_POLL_INTERVAL_SECONDS: ${NYKAA_POLL_INTERVAL_SECONDS:-${MARKETPLACE_POLL_INTERVAL_SECONDS:-300}}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      redis:
+        condition: service_healthy
 
   # Deal Engine — Sprint 3 Task 3.7. Consumes LISTING_DISCOVERED and
   # USER_INTERESTED, emits DEAL_SCORED (SERVICE_INTERFACES.md §2).
