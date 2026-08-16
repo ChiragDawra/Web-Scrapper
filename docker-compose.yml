@@ -171,6 +171,38 @@ services:
     # Schema migrations are not run here — `alembic upgrade head` from
     # infra/postgres is an operator step, not a race between app containers.
 
+  # Revalidation Service — Sprint 5 Task 5.4. Consumes
+  # DEAL_REVALIDATION_REQUEST, emits DEAL_REVALIDATED (SERVICE_INTERFACES.md §3).
+  revalidation-service:
+    build:
+      context: .
+      dockerfile: services/revalidation-service/Dockerfile
+    container_name: businessscrapper-revalidation-service
+    restart: unless-stopped
+    environment:
+      # Postgres for processed_events dedup only — this service owns no tables
+      # (SERVICE_INTERFACES.md §3); see services/revalidation-service/src/config.py.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-businessscrapper}:${POSTGRES_PASSWORD:-businessscrapper}@postgres:5432/${POSTGRES_DB:-businessscrapper}
+      REDIS_URL: redis://redis:6379/0
+      CONSUMER_NAME: ${HOSTNAME:-revalidation-service}
+      # Clamped to 30s in config.py and never above it: STATE_TRANSITIONS.md §1
+      # fixes the Bot's timeout there, and a longer budget would emit into a
+      # window the Bot has already closed.
+      REVALIDATION_TIMEOUT_SECONDS: ${REVALIDATION_TIMEOUT_SECONDS:-30}
+      # Unset: the service falls back to its own recorded-fixture directory,
+      # which the image already carries. Point this at a mount to replay a
+      # different recording set (INPUTS_NEEDED.md item 1).
+      REVALIDATION_FIXTURE_DIR: ${REVALIDATION_FIXTURE_DIR:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        # The dedup mark is written on the first event read, so a refused
+        # connection at boot would fail that event rather than wait.
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # No ports: it consumes from the bus and serves nothing.
+
 volumes:
   pgdata:
   redisdata:

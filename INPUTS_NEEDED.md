@@ -27,6 +27,8 @@ Legend for **Needed by**: the sprint that stops without it.
 | 10 | Admin Dashboard frontend framework | Sprint 14 | Decision |
 | 11 | Deployment target & CI secrets | Sprint 16 | Decision |
 | 12 | Monitoring / logging stack | Sprint 16 | Decision |
+| 13 | Stock baseline for the 2% revalidation rule | Sprint 5 (soft), Sprint 6 (hard) | Contract decision |
+| 14 | How a revalidation read resolves `listing_id` to a marketplace URL | Sprint 5 (soft), Sprint 6 (hard) | Contract decision |
 
 ---
 
@@ -312,6 +314,76 @@ alone, for errors, is the highest value-per-effort option and has a usable free
 tier: sign up at <https://sentry.io>, create a Python project, copy the **DSN**
 it shows you into `.env` as `SENTRY_DSN`. A DSN is low-sensitivity but still
 belongs in `.env`, not here.
+
+---
+
+## 13. Stock baseline for the 2% revalidation rule
+
+**Why:** `STATE_TRANSITIONS.md` §1 says a deal is `PRICE_CHANGED` when the price
+moved more than 2% **or** `in_stock` changed. The second half needs a baseline —
+what `in_stock` was when the deal was scored — and no frozen event carries one.
+`DEAL_SCORED` (`EVENT_SCHEMAS.md` §3) has `detected_price` but no stock flag, and
+`DEAL_REVALIDATION_REQUEST` has neither. So the Revalidation Service can compare
+prices exactly, but it can only see stock as it is *now*.
+
+Sprint 5 ships the safe reading of that gap, not a guess: `in_stock=False` at
+revalidation time is always "changed" (`REVAL_SOLD_OUT`), and an unknown baseline
+never invents a flip — a listing that was out of stock at scoring time and is
+back in stock now reads as unchanged rather than as a stock change. That is the
+one case the missing baseline loses, and it is the harmless direction: the deal
+is buyable and its price is within tolerance.
+
+**What I need:** one of two.
+
+- **(a) Leave it.** The price comparison plus "sold out now is changed" is enough,
+  and a deal that came *back* into stock needs no extra warning. Nothing changes
+  in code; this answer only puts the decision on record.
+- **(b) Add `in_stock` to `DEAL_SCORED`.** Then the baseline is exact and the
+  `was_in_stock` argument `revalidation_changed()` already accepts gets filled in.
+  This is a schema change to a frozen contract, so it needs your call: the field
+  would be added to `EVENT_SCHEMAS.md` §3 and its JSON Schema, the Deal Engine
+  would populate it from the listing it scored, and the Bot's existing consumers
+  would keep working (an added optional field breaks nothing).
+
+**How to decide:** pick (b) only if a back-in-stock deal is materially different
+to you from one that was in stock all along. If you have no view, say "leave it"
+and I will note it as decided.
+
+---
+
+## 14. How a revalidation read resolves `listing_id` to a marketplace URL
+
+**Why:** `SERVICE_INTERFACES.md` §3 requires the live price/stock to come from
+the marketplace, "not a cached `listings` row". But
+`DEAL_REVALIDATION_REQUEST` carries only `deal_id`, `listing_id` and
+`correlation_id` — no `external_listing_id` and no URL — and `listings` is
+Deal-Engine-owned, so ADR-009 forbids this service from querying it for one.
+Something has to bridge an internal UUID to an address on Amazon.
+
+Sprint 5 sidesteps this the same way Sprints 2 and 4 sidestep item 1: the read
+path is a `ListingSource` protocol backed by recorded fixtures keyed on
+`listing_id`, so the shape is fixed and the transport is not. Swapping in the
+live source is one line in the service's `main.py`.
+
+**What I need:** one of three, and it interacts with item 1.
+
+- **(a) Add `external_listing_id` + `marketplace` to the request.** The Bot
+  already holds the deal it is confirming, so it can carry the marketplace's own
+  identifier into the request and this service needs no lookup at all. Cleanest,
+  and a schema change to `EVENT_SCHEMAS.md` §3.
+- **(b) A read API on the Deal Engine.** `listing_id` in, external identifier
+  out. Contract-legal (a service may expose its own data) but it puts a
+  synchronous hop inside the 30s window.
+- **(c) A `LISTING_INGESTED` projection.** This service already rebuilds
+  `detected_price` from the `DEAL_SCORED` stream; the same approach could keep a
+  `listing_id → external_listing_id` map warm from ingestion events. No schema
+  change and no extra hop, but it needs the stream retained long enough to
+  rebuild after a restart.
+
+**How to decide:** (a) if you are comfortable changing the event, (c) if you
+would rather not. I recommend (a) — it is two fields and it removes the problem
+rather than routing around it. Either way, nothing here blocks until Sprint 6,
+when the Bot starts sending real requests.
 
 ---
 
